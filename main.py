@@ -3,7 +3,7 @@ import typing
 
 from config import *
 
-from advmain import getadvCache, adv
+from assets.consoleBased import getadvCache, adv
 from displayGuiModule import CheckBox, GuiElement, Button, InputBox, JSONTextBox, RectBox, SelectionBox, TextBox
 from types_mypy import *
 
@@ -51,10 +51,13 @@ def displayAdv(advName: str, allQualified: typing.List[adv]):
             cursory += 32
 
 def filtering(x: adv, query: str) -> bool:
+    # mypy typing
     if OptionsConfig["pack"]["type"] != "SelectionBox": return False
     if OptionsConfig["onlyShow"]["type"] != "SelectionBox": return False
     if OptionsConfig["caseSensitive"]["type"] != "CheckBox": return False
     if type(currentOptions["caseSensitive"]) != bool: return False
+    # endof mypy typing
+
     onlyShowSelected = currentOptions["onlyShow"]
     packSelected = currentOptions["pack"]
     isCaseSensitive = currentOptions["caseSensitive"]
@@ -78,8 +81,8 @@ def filtering(x: adv, query: str) -> bool:
         (onlyShowSelected in ["incompleted", "all"] and not x.playerData["isDone"])
     )
     PackCheck = (
-        (packSelected     in ["bacap",       "all"] and     x.isBACAP             ) or
-        (packSelected     in ["vanilla",     "all"] and not x.isBACAP             ) 
+        (packSelected in ["bacap", "all"] and x.isBACAP) or
+        (packSelected in ["vanilla", "all"] and not x.isBACAP) 
     )
 
     return caseSensitiveCheck and PackCheck and onlyShowCheck

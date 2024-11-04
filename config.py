@@ -1,4 +1,4 @@
-import typing
+import json
 from types_mypy import *
 from colorama import *
 
@@ -8,30 +8,27 @@ WIDTH = 1400
 HEIGHT = 860
 CENTER = (WIDTH//2, HEIGHT//2)
 
+with open("config.json", "r", encoding="utf-8") as f:
+    global config 
+    config = json.load(f)
+
 RED = Fore.RED
 GREEN = Fore.GREEN
 YELLOW = Fore.YELLOW
 RESET = Fore.RESET
 
-DONE = GREEN+"✓"
-NOTDONE = RED+"✘"
+DONE = GREEN + config["symbols"]["done"]
+NOTDONE = RED + config["symbols"]["not_done"]
 
-BACAP_DIR = r"data\blazeandcave\advancements"
 BACAP_ID = "blazeandcave:"
+BACAP_DIR = config["packPath"][BACAP_ID]
 
-MC_DIR = r"data\minecraft\advancements"
 MC_ID = "minecraft:"
+MC_DIR = config["packPath"][MC_ID]
 
-PDFILE = r"C:\Users\terencee\AppData\Roaming\ModrinthApp\profiles\AchieveToDo\saves\saves\advancements\113d86eb-d0ad-4994-96d8-5c248571b6cd.json"
+PDFILE = config["playerDataPath"]
 
-# BLACKRGB = (0, 0, 0)
-# WHITERGB = (255, 255, 255)
-# GRAYRGB = (128, 128, 128)
-# REDRGB = (255, 0, 0)
-# GREENRGB = (0, 255, 0)
-# BLUERGB = (0, 0, 255)
-
-FONTNAME = "JetBrainsMono-Regular.ttf"
+FONTNAME = config["fontPath"]
 
 COLOR: ColorsType = {
     "black": (0, 0, 0),

@@ -1,6 +1,6 @@
 import typing
 from adv_class import adv
-from advmain import loadAllAdv
+from assets.consoleBased import loadAllAdv
 from config import *
 
 advCache: typing.List[adv] = loadAllAdv()

@@ -5,3 +5,4 @@ __pycache__/
 src/
 play.json
 data/
+*.gitignore
