@@ -42,11 +42,9 @@ OptionsConfig: typing.Dict[str, typing.Union[SelBoxOptions, CheckBoxOptions]] = 
         "default": False
     }
 }
-# currentOptions = {
-# "onlyShow": "completed"
-#}
+
 currentOptions = dict(map(lambda x: (x[0], x[1]["default"]), OptionsConfig.items()))
-print(currentOptions)
+
 def displayAdv(advName: str, allQualified: typing.List[adv]):
     GuiElement.deleteGuiElementById("adv_display_.*")
     for Adv in allQualified:
@@ -65,7 +63,7 @@ def displayAdv(advName: str, allQualified: typing.List[adv]):
             TextBox(f"adv_display_comp_line_{l}", (300, cursory), "/".join(criterion), GREENRGB)
             cursory += 32
 
-def Filter(x: adv, query: str) -> bool:
+def filtering(x: adv, query: str) -> bool:
     if OptionsConfig["pack"]["type"] != "SelectionBox": return False
     if OptionsConfig["onlyShow"]["type"] != "SelectionBox": return False
     if OptionsConfig["caseSensitive"]["type"] != "CheckBox": return False
@@ -137,7 +135,7 @@ def searchAdv(query):
     GuiElement.deleteGuiElementById("adv_found_text")
     GuiElement.deleteGuiElementById("qualified_adv_.*")
     print(query)
-    allQualified = list(filter(lambda x: Filter(x, query), getadvCache(query)))
+    allQualified = list(filter(lambda x: filtering(x, query), getadvCache(query)))
     TextBox("adv_found_text", (0, 32), f"Found {len(allQualified)} matching Advancement:")
     for i, Adv in enumerate(allQualified):
         Button(f"qualified_adv_{Adv.id}", (0, 36*i+36+32), (0, 32), 
@@ -146,8 +144,6 @@ def searchAdv(query):
 InputBox("advsearchbox", (0, 0), (140, 32), "Search...", lambda self: searchAdv(self["text"]))
 Button("advsearchbtn", (230, 0), (70, 32), "Search", lambda self: searchAdv(GuiElement.getElementById("advsearchbox")["text"]))
 Button("advsearchfilterbtn", (300, 0), (0, 32), "Filter", lambda x: ToggleFilterPopup())
-CheckBox("testchk", (300, 300), (16, 16), lambda x: print(x["checked"]))
-SelectionBox("testselbox", (350, 350), (0, 32), ["Test1", "Test2"], lambda x: print("aaa"))
 
 def processesAllInput(allEvents):
     for element in GuiElement.getAllGuiElement():
@@ -155,12 +151,6 @@ def processesAllInput(allEvents):
             element.handle_event(event)
         element.update()
         element.draw(root)
-
-# JSONTextBox(
-#     "testJsonText",
-#     (400, 400, 10, 10),
-#     json.loads(r'{"color":"#FF2A2A","translate":"The first is to smith a compass that vanishes","extra":[{"text":"\n"},{"color":"#FF2A2A","translate":"The second is to slay a corpse that fishes"},{"text":"\n"},{"color":"#FF2A2A","translate":"The third is to travel on an upside-down mount"},{"text":"\n"},{"color":"#FF2A2A","translate":"The fourth is to take a temple tripwire into account"},{"text":"\n"},{"color":"#FF2A2A","translate":"The fifth is to be invisible yet be visible everywhere"},{"text":"\n"},{"color":"#FF2A2A","translate":"The sixth is to return the product of a fowl in mid-air"},{"text":"\n"},{"color":"#FF2A2A","translate":"The seventh is to allow a child to commit the act of stealing"},{"text":"\n"},{"color":"#FF2A2A","translate":"The eighth is to smite a Wither with splash healing"},{"text":"\n"},{"color":"#FF2A2A","translate":"The ninth is to be a pirate; parrot, spyglass, map, and boat"},{"text":"\n"},{"color":"#FF2A2A","translate":"The tenth, if you can achieve it, you will be the G.O.A.T."}]}'.replace("\'", "'"))
-#     )
 
 while RUNNING:
     root.fill(BLACKRGB)
