@@ -1,5 +1,6 @@
 # BACAP-Visual-Tracker
-A project that serves as an alternatives to [AdvancementInfo](https://github.com/gbl/AdvancementInfo), for those who cannot use the mod directly.
+A project that serves as an alternative to [AdvancementInfo](https://github.com/gbl/AdvancementInfo), for those who cannot use the mod directly.
+This project is tailored for the players of the Blaze and Cave Advancement Pack.
 
 # How to use
 1. Fill in `config.json` with your own parameters.
