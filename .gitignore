@@ -1,0 +1,7 @@
+statmerger/
+.vscode/
+__pycache__/
+.mypy_cache/
+src/
+play.json
+data/
