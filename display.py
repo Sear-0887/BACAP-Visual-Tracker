@@ -74,40 +74,28 @@ def Filter(x: adv, query: str) -> bool:
     onlyShowSelected = currentOptions["onlyShow"]
     packSelected = currentOptions["pack"]
     isCaseSensitive = currentOptions["caseSensitive"]
-    # print(currentOptions)
-    # print((
-    #         not isCaseSensitive and (
-    #             query.lower() in adv.title.lower() or
-    #             query.lower() in adv.description.lower() or
-    #             query.lower() in adv.id.lower()
-    #         )
-    #     ) or (
-    #         isCaseSensitive and (
-    #             query in adv.title or
-    #             query in adv.description or
-    #             query in adv.id
-    #         )
-    #     ))
-    return (
-        # (
-        #     not isCaseSensitive and (
-        #         query.lower() in adv.title.lower() or
-        #         query.lower() in adv.description.lower() or
-        #         query.lower() in adv.id.lower()
-        #     )
-        # ) or (
-        #     isCaseSensitive and (
-        #         query in adv.title or
-        #         query in adv.description or
-        #         query in adv.id
-        #     )
-        # )
-    # ) or (
+    caseSensitiveCheck = (
+        not isCaseSensitive and (
+            query.lower() in x.title.lower() or
+            query.lower() in x.description.lower() or
+            query.lower() in x.id.lower()
+        )
+    ) or (
+        isCaseSensitive and (
+            query in x.title or
+            query in x.description or
+            query in x.id
+        )
+    )
+    onlyShowCheck = (
         (onlyShowSelected in ["completed",   "all"] and     x.playerData["isDone"]) or
-        (onlyShowSelected in ["incompleted", "all"] and not x.playerData["isDone"]) or
+        (onlyShowSelected in ["incompleted", "all"] and not x.playerData["isDone"])
+    )
+    PackCheck = (
         (packSelected     in ["bacap",       "all"] and     x.isBACAP             ) or
         (packSelected     in ["vanilla",     "all"] and not x.isBACAP             ) 
     )
+    return caseSensitiveCheck and PackCheck and onlyShowCheck
 
 def setFilterOptions(x: SelectionBox | CheckBox):
     id_ = x.id.split("_")[1]
