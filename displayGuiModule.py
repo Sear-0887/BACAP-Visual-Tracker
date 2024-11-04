@@ -8,9 +8,6 @@ from utils import convertRGBStrToTuple, nameDefaulting
 
 pygame.font.init()
 font = pygame.font.Font(FONTNAME, 16)
-# fontTitle = pygame.font.Font(FONTNAME, 32)
-
-
 
 LEFTCLICK = 1
 MIDDLECLICK = 2
@@ -20,18 +17,12 @@ SCROLLDOWN = 5
 
 def emptyFunc(): return
 
-# if anchor == "center":
-#     textRect = textSurf.get_rect()
-#     root.blit(textSurf, (coord[0] - textRect.w // 2, coord[1] - textRect.h // 2))
-# else:
-#     root.blit(textSurf, coord)
 def displayText(text: str, color: RGBTuple, background: RGBTuple | None = None) -> pygame.Surface:
     return font.render(text, True, color, background)
 
 def displayJSONText(textObj) -> pygame.Surface:
     allTextObj = [textObj] + nameDefaulting("extra", textObj, [])
     textBuffer = pygame.surface.Surface((2000, 2000)).convert_alpha()
-    # textBuffer.fill(COLOR["gray"])
     maxw, maxh = 0, 0
     curx, cury = 0, 0
     for textObj in allTextObj:
@@ -214,7 +205,7 @@ class SelectionBox(Button):
             callback: typing.Callable = emptyFunc, 
             initalIndex: int = 0,
             setInstant: bool = True
-            ):
+        ):
         super().__init__(id_, coord, dim, selection[0], callback)
         self.selection = selection
         self.selectedIndex = initalIndex

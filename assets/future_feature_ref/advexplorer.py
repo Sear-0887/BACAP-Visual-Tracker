@@ -5,6 +5,11 @@ from config import *
 
 advCache: typing.List[adv] = loadAllAdv()
 
+# if anchor == "center":
+#     textRect = textSurf.get_rect()
+#     root.blit(textSurf, (coord[0] - textRect.w // 2, coord[1] - textRect.h // 2))
+# else:
+#     root.blit(textSurf, coord)
 IdToAdv: typing.Dict[str, adv] = {}
 for Adv in advCache: IdToAdv[Adv.id] = Adv
 

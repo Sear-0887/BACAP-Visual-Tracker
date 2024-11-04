@@ -13,8 +13,6 @@ pygame.key.set_repeat(500, 50)
 root = pygame.display.set_mode((WIDTH, HEIGHT))
 RUNNING = True
 
-
-
 currentOptions = dict(map(lambda x: (x[0], x[1]["default"]), OptionsConfig.items()))
 
 def displayAdv(advName: str, allQualified: typing.List[adv]):
@@ -62,7 +60,7 @@ def filtering(x: adv, query: str) -> bool:
         )
     )
     onlyShowCheck = (
-        (onlyShowSelected in ["completed",   "all"] and     x.playerData["isDone"]) or
+        (onlyShowSelected in ["completed", "all"] and x.playerData["isDone"]) or
         (onlyShowSelected in ["incompleted", "all"] and not x.playerData["isDone"])
     )
     PackCheck = (
