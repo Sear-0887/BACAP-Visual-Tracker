@@ -13,22 +13,7 @@ pygame.key.set_repeat(500, 50)
 root = pygame.display.set_mode((WIDTH, HEIGHT))
 RUNNING = True
 
-OptionsConfig: OptionConfigType = {
-    "onlyShow": {
-        "type": "SelectionBox",
-        "default": "all",
-        "selections": ['completed', 'incompleted', 'all']
-    },
-    "pack": {
-        "type": "SelectionBox",
-        "default": "all",
-        "selections": ['bacap', 'vanilla', 'all']
-    },
-    "caseSensitive": {
-        "type": "CheckBox",
-        "default": False
-    }
-}
+
 
 currentOptions = dict(map(lambda x: (x[0], x[1]["default"]), OptionsConfig.items()))
 

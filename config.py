@@ -48,3 +48,20 @@ COLOR: ColorsType = {
     "yellow": (255, 255, 85),
     "white": (255, 255, 255)
 }
+
+OptionsConfig: OptionConfigType = {
+    "onlyShow": {
+        "type": "SelectionBox",
+        "default": "all",
+        "selections": ['completed', 'incompleted', 'all']
+    },
+    "pack": {
+        "type": "SelectionBox",
+        "default": "all",
+        "selections": ['bacap', 'vanilla', 'all']
+    },
+    "caseSensitive": {
+        "type": "CheckBox",
+        "default": False
+    }
+}
