@@ -1,6 +1,12 @@
+import typing
+from types_mypy import *
 from colorama import *
 
 init()
+
+WIDTH = 1400
+HEIGHT = 860
+CENTER = (WIDTH//2, HEIGHT//2)
 
 RED = Fore.RED
 GREEN = Fore.GREEN
@@ -18,16 +24,16 @@ MC_ID = "minecraft:"
 
 PDFILE = r"C:\Users\terencee\AppData\Roaming\ModrinthApp\profiles\AchieveToDo\saves\saves\advancements\113d86eb-d0ad-4994-96d8-5c248571b6cd.json"
 
-BLACKRGB = (0, 0, 0)
-WHITERGB = (255, 255, 255)
-GRAYRGB = (128, 128, 128)
-REDRGB = (255, 0, 0)
-GREENRGB = (0, 255, 0)
-BLUERGB = (0, 0, 255)
+# BLACKRGB = (0, 0, 0)
+# WHITERGB = (255, 255, 255)
+# GRAYRGB = (128, 128, 128)
+# REDRGB = (255, 0, 0)
+# GREENRGB = (0, 255, 0)
+# BLUERGB = (0, 0, 255)
 
 FONTNAME = "JetBrainsMono-Regular.ttf"
 
-COLOR = {
+COLOR: ColorsType = {
     "black": (0, 0, 0),
     "dark_blue": (0, 0, 170),
     "dark_green": (0, 170, 0),

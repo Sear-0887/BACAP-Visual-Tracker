@@ -5,28 +5,15 @@ from config import *
 
 from advmain import getadvCache, adv
 from displayGuiModule import CheckBox, GuiElement, Button, InputBox, JSONTextBox, RectBox, SelectionBox, TextBox
+from types_mypy import *
 
 pygame.init()
 pygame.key.set_repeat(500, 50)
 
-
-WIDTH = 1400
-HEIGHT = 860
-CENTER = (WIDTH//2, HEIGHT//2)
-
 root = pygame.display.set_mode((WIDTH, HEIGHT))
 RUNNING = True
 
-class SelBoxOptions(typing.TypedDict):
-    type: typing.Literal["SelectionBox"]
-    default: str
-    selections: typing.List[str]
-
-class CheckBoxOptions(typing.TypedDict):
-    type: typing.Literal["CheckBox"]
-    default: bool
-
-OptionsConfig: typing.Dict[str, typing.Union[SelBoxOptions, CheckBoxOptions]] = {
+OptionsConfig: OptionConfigType = {
     "onlyShow": {
         "type": "SelectionBox",
         "default": "all",
@@ -57,10 +44,10 @@ def displayAdv(advName: str, allQualified: typing.List[adv]):
         cursory += descBox.textSurface.get_height()
 
         for l, criterion in enumerate(Adv.playerData["incompleted"]):
-            TextBox(f"adv_display_incomp_line_{l}", (300, cursory), "/".join(criterion), REDRGB)
+            TextBox(f"adv_display_incomp_line_{l}", (300, cursory), "/".join(criterion), COLOR["red"])
             cursory += 32
         for l, criterion in enumerate(Adv.playerData["completed"]):
-            TextBox(f"adv_display_comp_line_{l}", (300, cursory), "/".join(criterion), GREENRGB)
+            TextBox(f"adv_display_comp_line_{l}", (300, cursory), "/".join(criterion), COLOR["green"])
             cursory += 32
 
 def filtering(x: adv, query: str) -> bool:
@@ -68,21 +55,22 @@ def filtering(x: adv, query: str) -> bool:
     if OptionsConfig["onlyShow"]["type"] != "SelectionBox": return False
     if OptionsConfig["caseSensitive"]["type"] != "CheckBox": return False
     if type(currentOptions["caseSensitive"]) != bool: return False
-    print(x.title, query)
     onlyShowSelected = currentOptions["onlyShow"]
     packSelected = currentOptions["pack"]
     isCaseSensitive = currentOptions["caseSensitive"]
     caseSensitiveCheck = (
-        not isCaseSensitive and (
-            query.lower() in x.title.lower() or
-            query.lower() in x.description.lower() or
-            query.lower() in x.id.lower()
-        )
-    ) or (
-        isCaseSensitive and (
-            query in x.title or
-            query in x.description or
-            query in x.id
+        (
+            not isCaseSensitive and (
+                query.lower() in x.title.lower() or
+                query.lower() in x.description.lower() or
+                query.lower() in x.id.lower()
+            )
+        ) or (
+            isCaseSensitive and (
+                query in x.title or
+                query in x.description or
+                query in x.id
+            )
         )
     )
     onlyShowCheck = (
@@ -93,6 +81,7 @@ def filtering(x: adv, query: str) -> bool:
         (packSelected     in ["bacap",       "all"] and     x.isBACAP             ) or
         (packSelected     in ["vanilla",     "all"] and not x.isBACAP             ) 
     )
+
     return caseSensitiveCheck and PackCheck and onlyShowCheck
 
 def setFilterOptions(x: SelectionBox | CheckBox):
@@ -101,7 +90,7 @@ def setFilterOptions(x: SelectionBox | CheckBox):
         print(f"setting {id_} to {x.selection[x.selectedIndex]}")
         currentOptions[id_] = x.selection[x.selectedIndex]
     elif isinstance(x, CheckBox):
-        print(f"setting {id_} to {x.checked}")
+        print(f"toggling {id_} to {x.checked}")
         currentOptions[id_] = x.checked
 
 def ToggleFilterPopup():
@@ -109,7 +98,7 @@ def ToggleFilterPopup():
         GuiElement.deleteGuiElementById("advfilter_.*")
         return
     cursorx, cursory = 300, 32
-    RectBox("advfilter_baseplate", (cursorx, cursory), (200, 64), BLACKRGB)
+    RectBox("advfilter_baseplate", (cursorx, cursory), (200, 64), COLOR["black"])
     for optionName, option in OptionsConfig.items():
         label = TextBox(f"advfilter_{optionName}_label", (cursorx, cursory), optionName)
         if option["type"] == "SelectionBox":
@@ -134,7 +123,6 @@ def ToggleFilterPopup():
 def searchAdv(query):
     GuiElement.deleteGuiElementById("adv_found_text")
     GuiElement.deleteGuiElementById("qualified_adv_.*")
-    print(query)
     allQualified = list(filter(lambda x: filtering(x, query), getadvCache(query)))
     TextBox("adv_found_text", (0, 32), f"Found {len(allQualified)} matching Advancement:")
     for i, Adv in enumerate(allQualified):
@@ -153,7 +141,7 @@ def processesAllInput(allEvents):
         element.draw(root)
 
 while RUNNING:
-    root.fill(BLACKRGB)
+    root.fill(COLOR["black"])
     allEvents = pygame.event.get()
     processesAllInput(allEvents)
     for event in allEvents:

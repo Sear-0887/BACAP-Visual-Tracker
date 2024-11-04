@@ -10,13 +10,7 @@ pygame.font.init()
 font = pygame.font.Font(FONTNAME, 16)
 # fontTitle = pygame.font.Font(FONTNAME, 32)
 
-Coord = typing.Tuple[int, int]
-ColorValue = typing.Tuple[int, int, int]
-class JSONText(typing.TypedDict):
-    text: str
-    translate: str
-    color: str
-    extra: typing.List[typing.Any]
+
 
 LEFTCLICK = 1
 MIDDLECLICK = 2
@@ -31,13 +25,13 @@ def emptyFunc(): return
 #     root.blit(textSurf, (coord[0] - textRect.w // 2, coord[1] - textRect.h // 2))
 # else:
 #     root.blit(textSurf, coord)
-def displayText(text: str, color: ColorValue, background: ColorValue | None = None) -> pygame.Surface:
+def displayText(text: str, color: RGBTuple, background: RGBTuple | None = None) -> pygame.Surface:
     return font.render(text, True, color, background)
 
 def displayJSONText(textObj) -> pygame.Surface:
     allTextObj = [textObj] + nameDefaulting("extra", textObj, [])
     textBuffer = pygame.surface.Surface((2000, 2000)).convert_alpha()
-    # textBuffer.fill(GRAYRGB)
+    # textBuffer.fill(COLOR["gray"])
     maxw, maxh = 0, 0
     curx, cury = 0, 0
     for textObj in allTextObj:
@@ -57,9 +51,9 @@ def displayJSONText(textObj) -> pygame.Surface:
     return result
 
 class GuiElement:
-    def __init__(self, id_: str, coord: Coord, text="", callback: typing.Callable = emptyFunc):
+    def __init__(self, id_: str, coord: Vector2, text="", callback: typing.Callable = emptyFunc):
         self.id: str = id_
-        self.coord: Coord = coord
+        self.coord: Vector2 = coord
         self.text: str = text
         self.callback: typing.Callable = callback
         allGuiElements.append(self)
@@ -109,11 +103,11 @@ class GuiElement:
 allGuiElements: typing.List[GuiElement] = []
 
 class InputBox(GuiElement):
-    def __init__(self, id_: str, coord: Coord, dim: Coord, placeholder: str, callback: typing.Callable):
+    def __init__(self, id_: str, coord: Vector2, dim: Vector2, placeholder: str, callback: typing.Callable):
         super().__init__(id_, coord, "", callback)
         self.active = False
         self.placeholder = placeholder
-        self.color = GRAYRGB
+        self.color = COLOR["gray"]
         self.rect = pygame.Rect(coord[0], coord[1], dim[0], dim[1])
         self.textSurface = font.render("", True, self.color)
         self.textRect = self.textSurface.get_rect()
@@ -139,15 +133,15 @@ class InputBox(GuiElement):
         self.rect.w = max(200, self.textSurface.get_width()+10)
 
     def draw(self, screen):
-        self.color = WHITERGB if self.active else GRAYRGB
+        self.color = COLOR["white"] if self.active else COLOR["gray"]
         screen.blit(self.textSurface, (self.rect.x+5, self.rect.y+5))
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
 class Button(GuiElement):
-    def __init__(self, id_, coord: Coord, dim: Coord, text: str, callback: typing.Callable):
+    def __init__(self, id_, coord: Vector2, dim: Vector2, text: str, callback: typing.Callable):
         super().__init__(id_, coord, text, callback)
         self.rect: pygame.Rect = pygame.Rect(coord[0], coord[1], dim[0], dim[1])
-        self.textSurface: pygame.Surface = displayText(self.text, WHITERGB)
+        self.textSurface: pygame.Surface = displayText(self.text, COLOR["white"])
         
     
     def handle_event(self, event):
@@ -166,10 +160,10 @@ class Button(GuiElement):
           self.rect.y + max(0, (self.rect.h - self.textRect.h) // 2)
         )
         screen.blit(self.textSurface, dest)
-        pygame.draw.rect(screen, GRAYRGB, self.rect, 2)
+        pygame.draw.rect(screen, COLOR["gray"], self.rect, 2)
 
 class TextBox(GuiElement):
-    def __init__(self, id_, coord: Coord, text, color=WHITERGB):
+    def __init__(self, id_, coord: Vector2, text, color=COLOR["white"]):
         super().__init__(id_, coord, text)
         self.color = color
         self.textSurface = displayText(self.text,self.color)
@@ -178,7 +172,7 @@ class TextBox(GuiElement):
         screen.blit(self.textSurface, self.coord)
 
 class JSONTextBox(GuiElement):
-    def __init__(self, id_, coord: Coord, textJSON: JSONText):
+    def __init__(self, id_, coord: Vector2, textJSON: JSONText):
         super().__init__(id_, coord)
         self.textJSON = textJSON
         self.textSurface = displayJSONText(self.textJSON)
@@ -187,17 +181,17 @@ class JSONTextBox(GuiElement):
         screen.blit(self.textSurface, self.coord)
 
 class RectBox(GuiElement):
-    def __init__(self, id_, coord: Coord, dim: Coord, color=WHITERGB):
+    def __init__(self, id_, coord: Vector2, dim: Vector2, color=COLOR["white"]):
         super().__init__(id_, coord)
         self.rect = pygame.Rect(coord[0], coord[1], dim[0], dim[1])
         self.color = color
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
-        pygame.draw.rect(screen, GRAYRGB, self.rect, 2)
+        pygame.draw.rect(screen, COLOR["gray"], self.rect, 2)
 
 class CheckBox(GuiElement):
-    def __init__(self, id_, coord: Coord, dim: Coord, callback):
+    def __init__(self, id_, coord: Vector2, dim: Vector2, callback):
         super().__init__(id_, coord, "", callback)
         self.checked = False
         self.rect = pygame.Rect(coord[0], coord[1], dim[0], dim[1])
@@ -209,13 +203,13 @@ class CheckBox(GuiElement):
             self.callback(self)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, GREENRGB if self.checked else REDRGB, self.rect)
-        pygame.draw.rect(screen, GRAYRGB, self.rect, 2)
+        pygame.draw.rect(screen, COLOR["green"] if self.checked else COLOR["red"], self.rect)
+        pygame.draw.rect(screen, COLOR["gray"], self.rect, 2)
 
 class SelectionBox(Button):
     def __init__(
             self, id_: str, 
-            coord: Coord, dim: Coord, 
+            coord: Vector2, dim: Vector2, 
             selection: typing.List[str], 
             callback: typing.Callable = emptyFunc, 
             initalIndex: int = 0,
@@ -225,7 +219,7 @@ class SelectionBox(Button):
         self.selection = selection
         self.selectedIndex = initalIndex
         self.text = self.selection[self.selectedIndex]
-        self.textSurface: pygame.Surface = displayText(self.text, WHITERGB)
+        self.textSurface: pygame.Surface = displayText(self.text, COLOR["white"])
         self.setInstant = setInstant
     
     def handle_event(self, event):
@@ -245,5 +239,5 @@ class SelectionBox(Button):
     def update(self):
         super().update()
         self.text = "↕" + self.selection[self.selectedIndex]
-        self.textSurface = displayText(self.text, WHITERGB)
+        self.textSurface = displayText(self.text, COLOR["white"])
         
