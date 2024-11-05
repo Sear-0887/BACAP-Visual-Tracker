@@ -229,6 +229,7 @@ class SelectionBox(Button):
 
     def update(self):
         super().update()
-        self.text = "↕" + self.selection[self.selectedIndex]
+        self.text = "↓" if self.selectedIndex == 0 else ("↑" if self.selectedIndex == len(self.selection)-1 else "↕")
+        self.text += self.selection[self.selectedIndex]
         self.textSurface = displayText(self.text, COLOR["white"])
         
