@@ -153,7 +153,7 @@ class Button(GuiElement):
         screen.blit(self.textSurface, dest)
         pygame.draw.rect(screen, COLOR["gray"], self.rect, 2)
 
-class TextBox(GuiElement):
+class Text(GuiElement):
     def __init__(self, id_, coord: Vector2, text, color=COLOR["white"]):
         super().__init__(id_, coord, text)
         self.color = color
@@ -162,7 +162,7 @@ class TextBox(GuiElement):
     def draw(self, screen):
         screen.blit(self.textSurface, self.coord)
 
-class JSONTextBox(GuiElement):
+class JSONText(GuiElement):
     def __init__(self, id_, coord: Vector2, textJSON: JSONText):
         super().__init__(id_, coord)
         self.textJSON = textJSON

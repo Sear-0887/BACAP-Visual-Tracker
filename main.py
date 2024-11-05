@@ -4,7 +4,7 @@ import typing
 from config import *
 
 from assets.consoleBased import getadvCache, adv
-from displayGuiModule import CheckBox, GuiElement, Button, InputBox, JSONTextBox, RectBox, SelectionBox, TextBox
+from displayGuiModule import CheckBox, GuiElement, Button, InputBox, JSONText, RectBox, SelectionBox, Text
 from types_mypy import *
 
 pygame.init()
@@ -20,16 +20,16 @@ def displayAdv(advName: str, allQualified: typing.List[adv]):
     for Adv in allQualified:
         if advName != Adv.title: continue
         cursorx, cursory = 300, 100
-        titleBox = JSONTextBox("adv_display_title", (cursorx, cursory), Adv.titleJSON)
+        titleBox = JSONText("adv_display_title", (cursorx, cursory), Adv.titleJSON)
         cursory += titleBox.textSurface.get_height() + 10
-        descBox = JSONTextBox("adv_display_desc", (300, cursory), Adv.descriptionJSON)
+        descBox = JSONText("adv_display_desc", (300, cursory), Adv.descriptionJSON)
         cursory += descBox.textSurface.get_height()
 
         for l, criterion in enumerate(Adv.playerData["incompleted"]):
-            TextBox(f"adv_display_incomp_line_{l}", (300, cursory), "/".join(criterion), COLOR["red"])
+            Text(f"adv_display_incomp_line_{l}", (300, cursory), "/".join(criterion), COLOR["red"])
             cursory += 32
         for l, criterion in enumerate(Adv.playerData["completed"]):
-            TextBox(f"adv_display_comp_line_{l}", (300, cursory), "/".join(criterion), COLOR["green"])
+            Text(f"adv_display_comp_line_{l}", (300, cursory), "/".join(criterion), COLOR["green"])
             cursory += 32
 
 def filtering(x: adv, query: str) -> bool:
@@ -85,7 +85,7 @@ def ToggleFilterPopup():
     cursorx, cursory = 300, 32
     RectBox("advfilter_baseplate", (cursorx, cursory), (210, 32*len(OptionsConfig.items())), COLOR["black"])
     for optionName, option in OptionsConfig.items():
-        label = TextBox(f"advfilter_{optionName}_label", (cursorx, cursory), optionName)
+        label = Text(f"advfilter_{optionName}_label", (cursorx, cursory), optionName)
         if option["type"] == "SelectionBox":
             SelectionBox(
                 f"advfilter_{optionName}_sel", 
@@ -109,7 +109,7 @@ def searchAdv(query):
     GuiElement.deleteGuiElementById("adv_found_text")
     GuiElement.deleteGuiElementById("qualified_adv_.*")
     allQualified = list(filter(lambda x: filtering(x, query), getadvCache(query)))
-    TextBox("adv_found_text", (0, 32), f"Found {len(allQualified)} matching Advancement:")
+    Text("adv_found_text", (0, 32), f"Found {len(allQualified)} matching Advancement:")
     for i, Adv in enumerate(allQualified):
         Button(f"qualified_adv_{Adv.id}", (0, 36*i+36+32), (0, 32), 
         Adv.title, lambda x: displayAdv(x.text, allQualified))
