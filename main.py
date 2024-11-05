@@ -19,7 +19,6 @@ def displayAdv(advName: str, allQualified: typing.List[adv]):
     GuiElement.deleteGuiElementById("adv_display_.*")
     for Adv in allQualified:
         if advName != Adv.title: continue
-        print(Adv)
         cursorx, cursory = 300, 100
         titleBox = JSONTextBox("adv_display_title", (cursorx, cursory), Adv.titleJSON)
         cursory += titleBox.textSurface.get_height() + 10
@@ -84,7 +83,7 @@ def ToggleFilterPopup():
         GuiElement.deleteGuiElementById("advfilter_.*")
         return
     cursorx, cursory = 300, 32
-    RectBox("advfilter_baseplate", (cursorx, cursory), (200, 64), COLOR["black"])
+    RectBox("advfilter_baseplate", (cursorx, cursory), (210, 32*len(OptionsConfig.items())), COLOR["black"])
     for optionName, option in OptionsConfig.items():
         label = TextBox(f"advfilter_{optionName}_label", (cursorx, cursory), optionName)
         if option["type"] == "SelectionBox":
@@ -95,14 +94,14 @@ def ToggleFilterPopup():
                 option["selections"], 
                 setFilterOptions, 
                 option["selections"].index(currentOptions[optionName])
-                )
+            )
         elif option["type"] == "CheckBox":
             CheckBox(
                 f"advfilter_{optionName}_sel", 
                 (cursorx + label.textSurface.get_width() + 40, cursory), 
                 (32, 32), 
                 setFilterOptions,
-                )
+            )
         cursory += 32
 
 
