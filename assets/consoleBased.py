@@ -6,7 +6,7 @@ from colorama import init as Colorama_Init
 
 from config import *
 from utils import warning
-from adv_class import adv
+from adv_class import Advancement
 
 Colorama_Init()
 
@@ -24,7 +24,7 @@ def loadAllAdv():
                 if not defFileName.endswith(".json"): 
                     return warning("Non-AdvDef found in Tab folders")
                 defPath = os.path.join(tabPath, defFileName)
-                loadedAdv = adv(defPath, isBACAP)
+                loadedAdv = Advancement(defPath, isBACAP)
                 if not loadedAdv.isDisplayMissing:
                     result.append(loadedAdv)
     loadAdvInDir(BACAP_DIR, True)
@@ -53,6 +53,6 @@ def consoleSearch(query: str):
     print(qualified[int(input("Enter Index: "))-1])
 
 if __name__ == "__main__":
-    advCache: typing.List[adv] = loadAllAdv()
+    advCache: typing.List[Advancement] = loadAllAdv()
     while True:
         consoleSearch(input("Enter Search: "))

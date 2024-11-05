@@ -3,14 +3,14 @@ import re
 import typing
 from utils import exclude, warning, nameDefaulting
 
-from config import BACAP_DIR, BACAP_ID, MC_DIR, MC_ID, DONE, NOTDONE, PDFILE, GREEN, YELLOW
+from config import *
 
 with open(PDFILE, encoding="utf-8") as f:
     raw: typing.Dict[str, typing.Any] = json.load(f)
 
 # Main adv definition #
-PDType = typing.TypedDict('PDType', {'isDone': bool, 'completed': typing.List[str], 'incompleted': typing.List[str]})
-class adv:
+
+class Advancement:
     isBACAP: bool
     baseDir: str    # Determined solely by self.isBACAP
     baseID: str     # Determined solely by self.isBACAP
@@ -27,7 +27,7 @@ class adv:
     # Defaults as a [ <Everything listed in criteria, each criteria is an "requirement"> ]
     requirements: typing.List[typing.List[str]] = [] 
     # Stores 
-    playerData: PDType = {'isDone': False, 'completed': [], "incompleted": []}
+    playerData: PlayerDataType = {'isDone': False, 'completed': [], "incompleted": []}
 
     def __init__(self, filepath: str, isBACAP: bool = False) -> None:
         self.path = filepath
@@ -132,4 +132,4 @@ print(__name__)
 if __name__ == "__main__":
     # print(str(adv(r"data\blazeandcave\advancements\weaponry\master_shieldsman.json")))
     # print(adv(r"data\blazeandcave\advancements\weaponry\master_shieldsman.json"))
-    print(adv(r"data\blazeandcave\advancements\challenges\riddle_me_this.json"))
+    print(Advancement(r"data\blazeandcave\advancements\challenges\riddle_me_this.json"))

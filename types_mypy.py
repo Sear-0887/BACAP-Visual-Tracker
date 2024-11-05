@@ -44,3 +44,9 @@ ColorsType = typing.Dict[
     ],
     RGBTuple
 ]
+
+PlayerDataType = typing.TypedDict('PDType', {
+    'isDone': bool, 
+    'completed': typing.List[str], 
+    'incompleted': typing.List[str]
+})

@@ -3,7 +3,7 @@ import typing
 
 from config import *
 
-from assets.consoleBased import getadvCache, adv
+from assets.consoleBased import getadvCache, Advancement
 from displayGuiModule import CheckBox, GuiElement, Button, InputBox, JSONText, RectBox, SelectionBox, Text
 from types_mypy import *
 
@@ -15,7 +15,7 @@ RUNNING = True
 
 currentOptions = dict(map(lambda x: (x[0], x[1]["default"]), OptionsConfig.items()))
 
-def displayAdv(advName: str, allQualified: typing.List[adv]):
+def displayAdv(advName: str, allQualified: typing.List[Advancement]):
     GuiElement.deleteGuiElementById("adv_display_.*")
     for Adv in allQualified:
         if advName != Adv.title: continue
@@ -32,7 +32,7 @@ def displayAdv(advName: str, allQualified: typing.List[adv]):
             Text(f"adv_display_comp_line_{l}", (300, cursory), "/".join(criterion), COLOR["green"])
             cursory += 32
 
-def filtering(x: adv, query: str) -> bool:
+def filtering(x: Advancement, query: str) -> bool:
     # mypy typing
     if OptionsConfig["pack"]["type"] != "SelectionBox": return False
     if OptionsConfig["onlyShow"]["type"] != "SelectionBox": return False
