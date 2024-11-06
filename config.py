@@ -26,7 +26,7 @@ BACAP_DIR = config["packPath"][BACAP_ID]
 MC_ID = "minecraft:"
 MC_DIR = config["packPath"][MC_ID]
 
-PDFILE = config["playerDataPath"]
+PDFILE = f"{config['playerModProfile']}/saves/{config['targetedSaveFile']}/advancements/{config['playerUUID']}.json"
 
 FONTNAME = config["fontPath"]
 

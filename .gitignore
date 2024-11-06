@@ -4,5 +4,5 @@ __pycache__/
 .mypy_cache/
 src/
 play.json
+config.json
 data/
-*.gitignore

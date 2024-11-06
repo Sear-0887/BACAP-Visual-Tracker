@@ -1,0 +1,16 @@
+{
+    "windowWidth": 1400,
+    "windowHeight": 860,
+    "symbols": {
+        "done": "✓",
+        "not_done": "✘"
+    },
+    "playerModProfile": "",
+    "targetedSaveFile": "",
+    "playerUUID": "",
+    "fontPath": "assets/JetBrainsMono-Regular.ttf",
+    "packPath": {
+        "minecraft:": "data/minecraft/advancements",
+        "blazeandcave:": "data/blazeandcave/advancements"
+    }
+}
