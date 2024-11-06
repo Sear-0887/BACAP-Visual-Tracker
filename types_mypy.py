@@ -16,7 +16,7 @@ OptionConfigType = typing.Dict[str, typing.Union[SelBoxOptions, CheckBoxOptions]
 Vector2 = typing.Tuple[int, int]
 RGBTuple = typing.Tuple[int, int, int]
 
-JSONText = typing.TypedDict("JSONText", {
+JSONTextType = typing.TypedDict("JSONText", {
     "text": str,
     "translate": str,
     "color": str,

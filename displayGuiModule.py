@@ -163,7 +163,7 @@ class Text(GuiElement):
         screen.blit(self.textSurface, self.coord)
 
 class JSONText(GuiElement):
-    def __init__(self, id_, coord: Vector2, textJSON: JSONText):
+    def __init__(self, id_, coord: Vector2, textJSON: JSONTextType):
         super().__init__(id_, coord)
         self.textJSON = textJSON
         self.textSurface = displayJSONText(self.textJSON)
