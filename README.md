@@ -9,7 +9,7 @@ This project is tailored for the players of the Blaze and Cave Advancement Pack.
 2. Copy Data
 - 1. Go to your save and locate `datapacks/bacap.zip`.
 - 2. Extract it to a folder named `data/` at the same level of `main.py`.
-2. Run `main.py`.
+3. Run `main.py`.
 
 # Requirements
 - Pip modules are listed inside `requirements.txt`
