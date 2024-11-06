@@ -1,4 +1,6 @@
 import json
+import zipfile
+import io
 import re
 import typing
 from utils import exclude, warning, nameDefaulting
@@ -10,9 +12,10 @@ with open(PDFILE, encoding="utf-8") as f:
 
 # Main adv definition #
 
+zf: zipfile.ZipFile | None = None
+
 class Advancement:
     isBACAP: bool
-    baseDir: str    # Determined solely by self.isBACAP
     baseID: str     # Determined solely by self.isBACAP
     parentID: str # 
     path: str = "???" # Bad input will cause itself to stay as "???"
@@ -29,20 +32,19 @@ class Advancement:
     # Stores 
     playerData: PlayerDataType = {'isDone': False, 'completed': [], "incompleted": []}
 
-    def __init__(self, filepath: str, isBACAP: bool = False) -> None:
-        self.path = filepath
-        self.isBACAP = isBACAP
-
-        if self.isBACAP:
-            self.baseDir = BACAP_DIR
-            self.baseID = BACAP_ID
-        else:
-            self.baseDir = MC_DIR
-            self.baseID = MC_ID
+    def __init__(self, filepath: str, baseID: str) -> None:
+        self.path = filepath.replace("\\", "/")
+        self.baseID = baseID
         
-        with open(self.path, encoding="utf-8") as f:
+        if zf is None: return
+        with io.TextIOWrapper(zf.open(self.path), encoding="utf-8") as f:
             fContent = json.loads(f.read().replace("\\'", "'"))
-        self.id = re.sub(self.baseDir.replace('\\', '/') + r"/(.*)/(.*)\.json", fr"{self.baseID}\1/\2", filepath.replace("\\", "/"))
+
+        self.id = re.sub(
+            rf"data/{self.baseID}/advancements/(.*)/(.*)\.json", 
+            rf"{self.baseID}:\1/\2", 
+            self.path
+        )
         self.isDisplayMissing = "display" not in fContent.keys()
         if self.isDisplayMissing: 
             return warning(f"No Display found for {filepath}, skipping")
@@ -55,7 +57,8 @@ class Advancement:
         self.descriptionJSON = displayDef["description"]
         self.type = nameDefaulting("frame", displayDef, "task")
         self.hidden = "hidden" in displayDef.keys() and displayDef["hidden"]
-        self.requirements = nameDefaulting('requirements', fContent, list(map(lambda x: [x], fContent['criteria'])))
+        criterias: typing.List[str] = fContent['criteria']
+        self.requirements = nameDefaulting('requirements', fContent, list(map(lambda x: [x], criterias)))
         self.playerData = {
             "isDone": False,
             "completed": [],
@@ -63,21 +66,25 @@ class Advancement:
         }
         self.updatePlayerProgress()
     
-    def translateText(self, textObj):
-        text = nameDefaulting("translate", textObj, nameDefaulting("text", textObj, ""))
+    def translateText(self, textObj: JSONTextType):
+        text: str = nameDefaulting("translate", textObj, nameDefaulting("text", textObj, ""))
         if "extra" in textObj.keys():
             for extra in textObj["extra"]:
                 text += self.translateText(extra)
         return text
 
     def updatePlayerProgress(self):
-        playerData = {
+        pdtype = typing.TypedDict("pdtype", {
+            "done": bool,
+            "criteria": typing.Dict[str, typing.Any] 
+        })
+        playerData: pdtype = {
             "done": False,
             "criteria": {}
         }
         
         for key, item in raw.items():
-            if not key.startswith(self.baseID): continue
+            if not key.startswith(self.baseID + ":"): continue
             if self.id not in key: continue
             playerData = item
             break
@@ -104,14 +111,24 @@ class Advancement:
         return f""" {color}
 {self.title} - {len(self.playerData["completed"])}/{len(self.requirements)} ({round(percentage, 2)}%)
 | ID - {self.id} | Type - {self.type} | Hidden - {self.hidden} |
-| BACAP - {self.isBACAP} | Done - {self.playerData['isDone']} | 
+| BaseID - {self.baseID} | Done - {self.playerData['isDone']} | 
 | PATH - {self.path} |
 {self.description}
 
 {"\n".join(incompleted)}
 {"\n".join(completed)}
           """
+    
+    @staticmethod
+    def openZIP():
+        global zf
+        zf = zipfile.ZipFile(DATAPACKZIP)
 
+    @staticmethod
+    def closeZIP():
+        global zf
+        if zf is None: return
+        zf.close()
 # for Internal Testing 
 # {"\n".join(DONE + "/".join(self.playerData["completed"]))}
 #     def __str__(self) -> str:
@@ -132,4 +149,4 @@ print(__name__)
 if __name__ == "__main__":
     # print(str(adv(r"data\blazeandcave\advancements\weaponry\master_shieldsman.json")))
     # print(adv(r"data\blazeandcave\advancements\weaponry\master_shieldsman.json"))
-    print(Advancement(r"data\blazeandcave\advancements\challenges\riddle_me_this.json"))
+    print(Advancement(r"data\blazeandcave\advancements\challenges\riddle_me_this.json", "blazeandcave"))

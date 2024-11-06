@@ -11,28 +11,31 @@ from adv_class import Advancement
 Colorama_Init()
 
 isAdvCached = False
+advCache: typing.List[Advancement] = []
 
-def loadAllAdv():
+def loadAllAdv() -> typing.List[Advancement]:
     old = time.time()
-    result = []
-    def loadAdvInDir(baseDir: str, isBACAP: bool):
+    result: typing.List[Advancement] = []
+    def loadAdvInDir(baseDir: str, baseID: str):
         for tabName in os.listdir(baseDir):
             tabPath = os.path.join(baseDir, tabName)
             for defFileName in os.listdir(tabPath):
                 if not defFileName.endswith(".json"): 
-                    return warning("Non-AdvDef found in Tab folders")
+                    warning("Non-AdvDef found in Tab folders")
                 defPath = os.path.join(tabPath, defFileName)
-                loadedAdv = Advancement(defPath, isBACAP)
+                loadedAdv = Advancement(defPath, baseID)
                 if not loadedAdv.isDisplayMissing:
                     result.append(loadedAdv)
-    loadAdvInDir(BACAP_DIR, True)
-    loadAdvInDir(MC_DIR, False)
+    Advancement.openZIP()
+    loadAdvInDir(BACAP_DIR, BACAP_ID)
+    loadAdvInDir(MC_DIR, MC_ID)
+    Advancement.closeZIP()
     print(f"Finished loading all Adv, took {time.time()-old}s")
     global isAdvCached
     isAdvCached = True
     return result
 
-def getadvCache(query: str):
+def getadvCache():
     global advCache
     if not isAdvCached: advCache = loadAllAdv()
     return advCache

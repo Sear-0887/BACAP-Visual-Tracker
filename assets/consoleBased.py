@@ -1,12 +1,8 @@
-import os
-
 import typing
-import time
 from colorama import init as Colorama_Init
 
 from config import *
 from fileReader import getadvCache, loadAllAdv
-from utils import warning
 from adv_class import Advancement
 
 Colorama_Init()
@@ -14,7 +10,7 @@ Colorama_Init()
 isAdvCached = False
 
 def consoleSearch(query: str):
-    qualified = getadvCache(query)
+    qualified = getadvCache()
     # print(qualified)
     print(len(qualified))
     index = 1

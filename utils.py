@@ -1,34 +1,35 @@
 import datetime
 import typing
+from types_mypy import *
 
 from config import RED, RESET, YELLOW
 
 # The universal utilities used by all scripts. #
 
-def toTimestamp(ts):
+def toTimestamp(ts: str):
     return datetime.datetime.timestamp(datetime.datetime.fromisoformat(ts))
 
-def overlap(l1, l2):
+def overlap(l1: typing.Iterable[typing.Any], l2: typing.Iterable[typing.Any]):
     return list(set(l1) & set(l2))
 
-def exclude(l1, l2):
+def exclude(l1: typing.Iterable[typing.Any], l2: typing.Iterable[typing.Any]):
     return list(set(l1) - set(l2))
 
-def error(*args, **kwargs):
+def error(*args: typing.Any, **kwargs: typing.Any):
     print(f"{RED}ERROR:", *args, **kwargs)
     print(RESET, end="")
     
-def warning(*args, **kwargs):
+def warning(*args: typing.Any, **kwargs: typing.Any):
     print(f"{YELLOW}WARNING:", *args, **kwargs)
     print(RESET, end="")
 
-def nameDefaulting(name, data, default):
+def nameDefaulting(name: str, data: typing.Any, default: typing.Any):
     if name in data.keys():
         return data[name]
     else:
         return default
 
-def convertRGBStrToTuple(RGBStr: str) -> typing.Tuple[int, int, int]:
+def convertRGBStrToTuple(RGBStr: str) -> RGBTuple:
     return (
         int(RGBStr[1:3], 16),
         int(RGBStr[3:5], 16),

@@ -1,8 +1,8 @@
 import json
 from types_mypy import *
-from colorama import *
+from colorama import Fore, init as Colorama_Init
 
-init()
+Colorama_Init()
 
 WIDTH = 1400
 HEIGHT = 860
@@ -20,13 +20,16 @@ RESET = Fore.RESET
 DONE = GREEN + config["symbols"]["done"]
 NOTDONE = RED + config["symbols"]["not_done"]
 
-BACAP_ID = "blazeandcave:"
-BACAP_DIR = config["packPath"][BACAP_ID]
+SAVES = f"{config['playerModProfile']}/saves/{config['targetedSaveFile']}"
+DATAPACKZIP = f"{SAVES}/datapacks/bacap.zip"
 
-MC_ID = "minecraft:"
-MC_DIR = config["packPath"][MC_ID]
+BACAP_ID = "blazeandcave"
+BACAP_DIR = f"data/{BACAP_ID}/advancements"
 
-PDFILE = f"{config['playerModProfile']}/saves/{config['targetedSaveFile']}/advancements/{config['playerUUID']}.json"
+MC_ID = "minecraft"
+MC_DIR = f"data/{MC_ID}/advancements"
+
+PDFILE = f"{SAVES}/advancements/{config['playerUUID']}.json"
 
 FONTNAME = config["fontPath"]
 
@@ -58,7 +61,7 @@ OptionsConfig: OptionConfigType = {
     "pack": {
         "type": "SelectionBox",
         "default": "all",
-        "selections": ['bacap', 'vanilla', 'all']
+        "selections": [BACAP_ID, MC_ID, 'all']
     },
     "caseSensitive": {
         "type": "CheckBox",

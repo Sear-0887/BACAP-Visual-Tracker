@@ -12,7 +12,7 @@ pygame.init()
 pygame.key.set_repeat(500, 50)
 
 root = pygame.display.set_mode((WIDTH, HEIGHT))
-RUNNING = True
+Running: bool = True
 
 currentOptions = dict(map(lambda x: (x[0], x[1]["default"]), OptionsConfig.items()))
 
@@ -64,8 +64,7 @@ def filtering(x: Advancement, query: str) -> bool:
         (onlyShowSelected in ["incompleted", "all"] and not x.playerData["isDone"])
     )
     PackCheck = (
-        (packSelected in ["bacap", "all"] and x.isBACAP) or
-        (packSelected in ["vanilla", "all"] and not x.isBACAP) 
+        packSelected in [x.baseID, "all"]
     )
 
     return caseSensitiveCheck and PackCheck and onlyShowCheck
@@ -75,7 +74,7 @@ def setFilterOptions(x: SelectionBox | CheckBox):
     if isinstance(x, SelectionBox):
         print(f"setting {id_} to {x.selection[x.selectedIndex]}")
         currentOptions[id_] = x.selection[x.selectedIndex]
-    elif isinstance(x, CheckBox):
+    elif isinstance(x, CheckBox): # type: ignore
         print(f"toggling {id_} to {x.checked}")
         currentOptions[id_] = x.checked
 
@@ -94,7 +93,7 @@ def ToggleFilterPopup():
                 (0, 32), 
                 option["selections"], 
                 setFilterOptions, 
-                option["selections"].index(currentOptions[optionName])
+                option["selections"].index(str(currentOptions[optionName]))
             )
         elif option["type"] == "CheckBox":
             CheckBox(
@@ -106,31 +105,35 @@ def ToggleFilterPopup():
         cursory += 32
 
 
-def searchAdv(query):
+def searchAdv(query: str):
     GuiElement.deleteGuiElementById("adv_found_text")
     GuiElement.deleteGuiElementById("qualified_adv_.*")
-    allQualified = list(filter(lambda x: filtering(x, query), getadvCache(query)))
+    allQualified = list(filter(lambda x: filtering(x, query), getadvCache()))
     Text("adv_found_text", (0, 32), f"Found {len(allQualified)} matching Advancement:")
     for i, Adv in enumerate(allQualified):
-        Button(f"qualified_adv_{Adv.id}", (0, 36*i+36+32), (0, 32), 
-        Adv.title, lambda x: displayAdv(x.text, allQualified))
+        Button(
+            f"qualified_adv_{Adv.id}", 
+            (0, 36*i+36+32), (0, 32), 
+            Adv.title, 
+            lambda x: displayAdv(x.text, allQualified)
+        )
 
 InputBox("advsearchbox", (0, 0), (140, 32), "Search...", lambda self: searchAdv(self["text"]))
 Button("advsearchbtn", (230, 0), (70, 32), "Search", lambda self: searchAdv(GuiElement.getElementById("advsearchbox")["text"]))
 Button("advsearchfilterbtn", (300, 0), (0, 32), "Filter", lambda x: ToggleFilterPopup())
 
-def processesAllInput(allEvents):
+def processesAllInput(allEvents: typing.List[pygame.event.Event]):
     for element in GuiElement.getAllGuiElement():
         for event in allEvents:
             element.handle_event(event)
         element.update()
         element.draw(root)
 
-while RUNNING:
+while Running:
     root.fill(COLOR["black"])
     allEvents = pygame.event.get()
     processesAllInput(allEvents)
     for event in allEvents:
         if event.type == pygame.QUIT:
-            RUNNING = False
+            Running = False
     pygame.display.flip()
