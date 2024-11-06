@@ -3,7 +3,8 @@ import typing
 
 from config import *
 
-from assets.consoleBased import getadvCache, Advancement
+from fileReader import getadvCache
+from adv_class import Advancement
 from displayGuiModule import CheckBox, GuiElement, Button, InputBox, JSONText, RectBox, SelectionBox, Text
 from types_mypy import *
 
