@@ -8,9 +8,5 @@
     "playerModProfile": "",
     "targetedSaveFile": "",
     "playerUUID": "",
-    "fontPath": "assets/JetBrainsMono-Regular.ttf",
-    "packPath": {
-        "minecraft:": "data/minecraft/advancements",
-        "blazeandcave:": "data/blazeandcave/advancements"
-    }
+    "fontPath": "assets/JetBrainsMono-Regular.ttf"
 }
