@@ -115,12 +115,18 @@ def searchAdv(query: str):
             f"qualified_adv_{Adv.id}", 
             (0, 36*i+36+32), (0, 32), 
             Adv.title, 
-            lambda x: displayAdv(x.text, allQualified)
+            lambda x: displayAdv(x.text, allQualified) # type: ignore
         )
 
-InputBox("advsearchbox", (0, 0), (140, 32), "Search...", lambda self: searchAdv(self["text"]))
-Button("advsearchbtn", (230, 0), (70, 32), "Search", lambda self: searchAdv(GuiElement.getElementById("advsearchbox")["text"]))
-Button("advsearchfilterbtn", (300, 0), (0, 32), "Filter", lambda x: ToggleFilterPopup())
+InputBox("advsearchbox", (0, 0), (140, 32), "Search...", lambda self: searchAdv(self["text"])) # type: ignore
+Button(
+    "advsearchbtn", (230, 0), (70, 32), "Search", 
+    lambda _: searchAdv(GuiElement.getElementById("advsearchbox")["text"]) # type: ignore
+    )
+Button(
+    "advsearchfilterbtn", (300, 0), (0, 32), "Filter", 
+    lambda _: ToggleFilterPopup() # type: ignore
+    )
 
 def processesAllInput(allEvents: typing.List[pygame.event.Event]):
     for element in GuiElement.getAllGuiElement():

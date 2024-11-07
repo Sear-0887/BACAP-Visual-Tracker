@@ -58,7 +58,7 @@ class Advancement:
         self.type = nameDefaulting("frame", displayDef, "task")
         self.hidden = "hidden" in displayDef.keys() and displayDef["hidden"]
         criterias: typing.List[str] = fContent['criteria']
-        self.requirements = nameDefaulting('requirements', fContent, list(map(lambda x: [x], criterias)))
+        self.requirements = nameDefaulting('requirements', fContent, list(map(lambda x: [x], criterias))) # type: ignore
         self.playerData = {
             "isDone": False,
             "completed": [],
@@ -66,7 +66,7 @@ class Advancement:
         }
         self.updatePlayerProgress()
     
-    def translateText(self, textObj: JSONTextType):
+    def translateText(self, textObj: JSONTextType) -> str:
         text: str = nameDefaulting("translate", textObj, nameDefaulting("text", textObj, ""))
         if "extra" in textObj.keys():
             for extra in textObj["extra"]:
