@@ -15,10 +15,11 @@ with open(PDFILE, encoding="utf-8") as f:
 zf: zipfile.ZipFile | None = None
 
 class Advancement:
-    isBACAP: bool
-    baseID: str     # Determined solely by self.isBACAP
-    parentID: str # 
     path: str = "???" # Bad input will cause itself to stay as "???"
+    baseID: str     # Determined by path
+    parentID: str 
+    tab: str
+    name: str
     isDisplayMissing: bool = False # "display" is not present
     id: str = "???" # Determined by self.isDisplayMissing
     title: str = "???" # Determined by self.isDisplayMissing
@@ -32,10 +33,19 @@ class Advancement:
     # Stores 
     playerData: PlayerDataType = {'isDone': False, 'completed': [], "incompleted": []}
 
-    def __init__(self, filepath: str, baseID: str) -> None:
+    def __init__(self, filepath: str) -> None:
         self.path = filepath.replace("\\", "/")
-        self.baseID = baseID
         
+        extracted = re.match(
+            rf"data/(.*)/advancements/(.*)/(.*)\.json", 
+            # rf"{self.baseID}:\1/\2", 
+            self.path
+        )
+
+        if extracted is None: return warning(f"Bad Path {self.path}")
+        self.baseID, self.tab, self.name = extracted.groups()
+        self.id = f"{self.baseID}:{self.tab}/{self.name}"
+
         if zf is None: return
         with io.TextIOWrapper(zf.open(self.path), encoding="utf-8") as f:
             fContent = json.loads(f.read().replace("\\'", "'"))
@@ -149,4 +159,4 @@ print(__name__)
 if __name__ == "__main__":
     # print(str(adv(r"data\blazeandcave\advancements\weaponry\master_shieldsman.json")))
     # print(adv(r"data\blazeandcave\advancements\weaponry\master_shieldsman.json"))
-    print(Advancement(r"data\blazeandcave\advancements\challenges\riddle_me_this.json", "blazeandcave"))
+    print(Advancement(r"data\blazeandcave\advancements\challenges\riddle_me_this.json"))

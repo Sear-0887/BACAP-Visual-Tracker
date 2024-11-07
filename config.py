@@ -22,6 +22,7 @@ NOTDONE = RED + config["symbols"]["not_done"]
 
 SAVES = f"{config['playerModProfile']}/saves/{config['targetedSaveFile']}"
 DATAPACKZIP = f"{SAVES}/datapacks/bacap.zip"
+PDFILE = f"{SAVES}/advancements/{config['playerUUID']}.json"
 
 BACAP_ID = "blazeandcave"
 BACAP_DIR = f"data/{BACAP_ID}/advancements"
@@ -29,7 +30,6 @@ BACAP_DIR = f"data/{BACAP_ID}/advancements"
 MC_ID = "minecraft"
 MC_DIR = f"data/{MC_ID}/advancements"
 
-PDFILE = f"{SAVES}/advancements/{config['playerUUID']}.json"
 
 FONTNAME = config["fontPath"]
 
