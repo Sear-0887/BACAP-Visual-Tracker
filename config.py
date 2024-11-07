@@ -12,6 +12,8 @@ with open("config.json", "r", encoding="utf-8") as f:
     global config 
     config = json.load(f)
 
+
+
 RED = Fore.RED
 GREEN = Fore.GREEN
 YELLOW = Fore.YELLOW
@@ -22,7 +24,16 @@ NOTDONE = RED + config["symbols"]["not_done"]
 
 SAVES = f"{config['playerModProfile']}/saves/{config['targetedSaveFile']}"
 DATAPACKZIP = f"{SAVES}/datapacks/bacap.zip"
-PDFILE = f"{SAVES}/advancements/{config['playerUUID']}.json"
+
+with open(f"{config['playerModProfile']}/usercache.json", "r", encoding="utf-8") as f:
+    usercache = json.load(f)
+
+playerUUID = ""
+for entry in usercache:
+    if entry["name"] == config["playerName"]: 
+        playerUUID = entry["uuid"]
+        break
+PDFILE = f"{SAVES}/advancements/{playerUUID}.json"
 
 BACAP_ID = "blazeandcave"
 BACAP_DIR = f"data/{BACAP_ID}/advancements"
