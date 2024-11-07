@@ -1,12 +1,14 @@
 {
+    "playerModProfile": "",
+    "targetedSaveFile": "",
+    "playerName": "",
+
     "windowWidth": 1400,
     "windowHeight": 860,
+    "fontPath": "assets/JetBrainsMono-Regular.ttf",
+    
     "symbols": {
         "done": "✓",
         "not_done": "✘"
-    },
-    "playerModProfile": "",
-    "targetedSaveFile": "",
-    "playerUUID": "",
-    "fontPath": "assets/JetBrainsMono-Regular.ttf"
+    }
 }
