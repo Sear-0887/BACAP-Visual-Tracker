@@ -23,11 +23,8 @@ def warning(*args: typing.Any, **kwargs: typing.Any):
     print(f"{YELLOW}WARNING:", *args, **kwargs)
     print(RESET, end="")
 
-def nameDefaulting(name: str, data: typing.Any, default: typing.Any):
-    if name in data.keys():
-        return data[name]
-    else:
-        return default
+def nameDefaulting(name: str, data: typing.Dict[str, typing.Any], default: typing.Any):
+    return data.get(name, default)
 
 def convertRGBStrToTuple(RGBStr: str) -> RGBTuple:
     return (
