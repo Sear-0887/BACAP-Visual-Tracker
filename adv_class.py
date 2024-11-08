@@ -7,8 +7,11 @@ from utils import exclude, warning, nameDefaulting
 
 from config import *
 
-with open(PDFILE, encoding="utf-8") as f:
-    raw: typing.Dict[str, typing.Any] = json.load(f)
+raw: typing.Dict[str, typing.Any] = {}
+def RefreshRaw():
+    with open(PDFILE, encoding="utf-8") as f:
+        global raw
+        raw = json.load(f)
 
 # Main adv definition #
 

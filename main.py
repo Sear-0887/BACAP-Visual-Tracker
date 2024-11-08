@@ -3,8 +3,8 @@ import typing
 
 from config import *
 
-from fileReader import getadvCache
-from adv_class import Advancement
+from fileReader import getadvCache, loadAllAdv
+from adv_class import Advancement, RefreshRaw
 from displayGuiModule import CheckBox, GuiElement, Button, InputBox, JSONText, RectBox, SelectionBox, Text
 from types_mypy import *
 
@@ -78,7 +78,7 @@ def setFilterOptions(x: SelectionBox | CheckBox):
         print(f"toggling {id_} to {x.checked}")
         currentOptions[id_] = x.checked
 
-def ToggleFilterPopup():
+def ToggleFilterPopup(_: Button):
     if GuiElement.getElementExist("advfilter_baseplate"):
         GuiElement.deleteGuiElementById("advfilter_.*")
         return
@@ -118,6 +118,10 @@ def searchAdv(query: str):
             lambda x: displayAdv(x.text, allQualified) # type: ignore
         )
 
+def Refresh(_: Button):
+    RefreshRaw()
+    loadAllAdv()
+
 InputBox("advsearchbox", (0, 0), (140, 32), "Search...", lambda self: searchAdv(self["text"])) # type: ignore
 Button(
     "advsearchbtn", (230, 0), (70, 32), "Search", 
@@ -125,8 +129,12 @@ Button(
     )
 Button(
     "advsearchfilterbtn", (300, 0), (0, 32), "Filter", 
-    lambda _: ToggleFilterPopup() # type: ignore
+    ToggleFilterPopup
     )
+Button(
+    "advrefreshbtn", (400, 0), (0, 32), "Refresh",
+    Refresh
+)
 
 def processesAllInput(allEvents: typing.List[pygame.event.Event]):
     for element in GuiElement.getAllGuiElement():
@@ -135,6 +143,7 @@ def processesAllInput(allEvents: typing.List[pygame.event.Event]):
         element.update()
         element.draw(root)
 
+RefreshRaw()
 while Running:
     root.fill(COLOR["black"])
     allEvents = pygame.event.get()
