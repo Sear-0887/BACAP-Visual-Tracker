@@ -26,10 +26,12 @@ def loadAllAdv() -> typing.List[Advancement]:
                 loadedAdv = Advancement(defPath)
                 if not loadedAdv.isDisplayMissing:
                     result.append(loadedAdv)
+
     Advancement.openZIP()
     loadAdvInDir(BACAP_DIR)
     loadAdvInDir(MC_DIR)
     Advancement.closeZIP()
+    
     print(f"Finished loading all Adv, took {time.time()-old}s")
     global isAdvCached
     isAdvCached = True

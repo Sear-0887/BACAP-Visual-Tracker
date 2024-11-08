@@ -11,5 +11,4 @@ __pycache__/
 statmerger/
 src/
 play.json
-old_code_ref/old_adv_reader.py
-old_code_ref/old_main.py
+old_code_ref/
