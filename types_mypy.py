@@ -56,6 +56,11 @@ ColorKeys: typing.List[ColorKeyType] = [
 
 ColorsType = typing.Dict[ColorKeyType, RGBTuple]
 
+rawAdvDatatype = typing.TypedDict("rawAdvDatatype", {
+    "done": bool,
+    "criteria": typing.Dict[str, str] 
+})
+
 PlayerDataType = typing.TypedDict('PlayerDataType', {
     'isDone': bool, 
     'completed': typing.List[typing.List[str]], 

@@ -7,7 +7,7 @@ from utils import exclude, warning
 
 from config import *
 
-raw: typing.Dict[str, typing.Any] = {}
+raw: typing.Dict[str, rawAdvDatatype] = {}
 def RefreshRaw():
     with open(PDFILE, encoding="utf-8") as f:
         global raw
@@ -88,11 +88,8 @@ class Advancement:
         return text
 
     def updatePlayerProgress(self) -> None:
-        pdtype = typing.TypedDict("pdtype", {
-            "done": bool,
-            "criteria": typing.Dict[str, str] 
-        })
-        playerData: pdtype = {
+        
+        rawPlayerData: rawAdvDatatype = {
             "done": False,
             "criteria": {}
         }
@@ -100,13 +97,13 @@ class Advancement:
         for key, item in raw.items():
             if not key.startswith(self.modpackID + ":"): continue
             if self.id not in key: continue
-            playerData = item
+            rawPlayerData = item
             break
         else:
             warning(f"ID {self.id} is not present in playerData. Used empty data.")
 
-        self.playerData["isDone"] = playerData["done"]
-        progressNames = playerData["criteria"].keys()
+        self.playerData["isDone"] = rawPlayerData["done"]
+        progressNames = rawPlayerData["criteria"].keys()
         
         for requirement in self.requirements:
             completion = len(exclude(requirement, progressNames)) != len(requirement)
