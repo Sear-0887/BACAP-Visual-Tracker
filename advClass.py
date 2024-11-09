@@ -1,6 +1,5 @@
 import json
 import zipfile
-import io
 import re
 import typing
 from utils import exclude, warning
@@ -35,11 +34,10 @@ class Advancement:
     requirements: typing.List[typing.List[str]] = [] 
     playerData: PlayerDataType = {'isDone': False, 'completed': [], "incompleted": []}
 
-    def __init__(self, filepath: str, DataPackZIPFile: zipfile.ZipFile) -> None:
-        self.path = filepath.replace("\\", "/")
-        
+    def __init__(self, filepath: zipfile.Path) -> None:
+        self.path = str(filepath)
         extracted = re.match(
-            rf"data/(.*)/advancements/(.*)/(.*)\.json",
+            rf".*/data/(.*)/advancements/(.*)/(.*)\.json",
             self.path
         )
 
@@ -47,8 +45,7 @@ class Advancement:
         self.modpackID, self.tab, self.name = extracted.groups()
         self.id = f"{self.modpackID}:{self.tab}/{self.name}"
 
-        with io.TextIOWrapper(DataPackZIPFile.open(self.path), encoding="utf-8") as f:
-            fContent = json.loads(f.read().replace("\\'", "'"))
+        fContent = json.loads(filepath.read_text(encoding="utf-8").replace("\\'", "'"))
 
         self.isDisplayMissing = "display" not in fContent.keys()
         if self.isDisplayMissing: 
@@ -132,11 +129,3 @@ class Advancement:
 # Req  | {self.requirements}
 # PD   | {self.playerData}
 # """
-
-
-print(__name__)
-if __name__ == "__main__":
-    # print(str(adv(r"data\blazeandcave\advancements\weaponry\master_shieldsman.json")))
-    # print(adv(r"data\blazeandcave\advancements\weaponry\master_shieldsman.json"))
-    with zipfile.ZipFile(DATAPACKZIP) as f:
-        print(Advancement(r"data\blazeandcave\advancements\challenges\riddle_me_this.json", f))

@@ -1,29 +1,22 @@
 import typing
 import time
 import zipfile
-from colorama import init as Colorama_Init
+# import re
 
 from config import *
 from advClass import Advancement
-
-Colorama_Init()
 
 isAdvCached = False
 advCache: typing.List[Advancement] = []
 def loadAllAdv() -> typing.List[Advancement]:
     old = time.time()
     result: typing.List[Advancement] = []
-    def loadAdvInDir(baseDir: str):
-        for defPath in zf.namelist():
-            if not (defPath.endswith(".json") and defPath.startswith(baseDir)): continue
-            loadedAdv = Advancement(defPath, zf)
-            if not loadedAdv.isDisplayMissing:
-                result.append(loadedAdv)
+    basePath: zipfile.Path = zipfile.Path(DATAPACKZIP, "data/")
 
-    zf: zipfile.ZipFile = zipfile.ZipFile(DATAPACKZIP)
-    loadAdvInDir(BACAP_DIR)
-    loadAdvInDir(MC_DIR)
-    zf.close()
+    for defPath in basePath.glob("*/advancements/*/*.json"):
+        loadedAdv = Advancement(defPath)
+        if not loadedAdv.isDisplayMissing:
+            result.append(loadedAdv)
     
     print(f"Finished loading all Adv, took {time.time()-old}s")
     global isAdvCached

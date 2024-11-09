@@ -65,10 +65,10 @@ def filtering(x: Advancement, query: str) -> bool:
 def setFilterOptions(x: SelectionBox | CheckBox):
     id_ = x.id.split("_")[1]
     if isinstance(x, SelectionBox):
-        print(f"setting {id_} to {x.selection[x.selectedIndex]}")
+        # print(f"setting {id_} to {x.selection[x.selectedIndex]}")
         currentOptions[id_] = x.selection[x.selectedIndex]
     elif isinstance(x, CheckBox): # type: ignore
-        print(f"toggling {id_} to {x.checked}")
+        # print(f"toggling {id_} to {x.checked}")
         currentOptions[id_] = x.checked
 
 def ToggleFilterPopup(_: Button):

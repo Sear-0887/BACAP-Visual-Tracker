@@ -1,4 +1,5 @@
 import json
+import zipfile
 from types_mypy import *
 from colorama import Fore, init as Colorama_Init
 
@@ -37,10 +38,7 @@ for entry in usercache:
 PDFILE = f"{SAVES}/advancements/{playerUUID}.json"
 
 BACAP_ID = "blazeandcave"
-BACAP_DIR = f"data/{BACAP_ID}/advancements"
-
 MC_ID = "minecraft"
-MC_DIR = f"data/{MC_ID}/advancements"
 
 
 FONTNAME = config["fontPath"]
@@ -63,6 +61,7 @@ COLOR: ColorsType = {
     "yellow": (255, 255, 85),
     "white": (255, 255, 255)
 }
+allPacks: typing.List[str] = [p.name for p in zipfile.Path(DATAPACKZIP, "data/").iterdir()]
 
 OptionsConfig: OptionConfigType = {
     "onlyShow": {
@@ -73,7 +72,7 @@ OptionsConfig: OptionConfigType = {
     "pack": {
         "type": "SelectionBox",
         "default": "all",
-        "selections": [BACAP_ID, MC_ID, 'all']
+        "selections": allPacks + ["all"]
     },
     "caseSensitive": {
         "type": "CheckBox",

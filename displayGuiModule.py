@@ -223,11 +223,11 @@ class SelectionBox(Button):
             if not self.rect.collidepoint(event.pos): return
             if event.button == SCROLLUP:
                 self.selectedIndex = max(0, self.selectedIndex-1)
-                print(self.selectedIndex)
+                # print(self.selectedIndex)
                 if self.setInstant: self.callback(self)
             elif event.button == SCROLLDOWN:
                 self.selectedIndex = min(self.selectedIndex + 1, len(self.selection)-1)
-                print(self.selectedIndex)
+                # print(self.selectedIndex)
                 if self.setInstant: self.callback(self)
             elif event.button == LEFTCLICK:
                 self.callback(self)
