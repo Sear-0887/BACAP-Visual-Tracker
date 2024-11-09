@@ -4,7 +4,7 @@ import typing
 import pygame
 import re
 from config import *
-from utils import convertRGBStrToTuple, nameDefaulting
+from utils import convertRGBStrToTuple
 
 pygame.font.init()
 font = pygame.font.Font(FONTNAME, 16)
@@ -22,7 +22,7 @@ def displayText(text: str, color: RGBTuple, background: RGBTuple | None = None) 
 
 #                            vvvv TBD Fix Typing
 def displayJSONText(textObj: typing.Dict[str, typing.Any]) -> pygame.Surface:
-    allTextObj = [textObj] + nameDefaulting("extra", textObj, [])
+    allTextObj = [textObj] + textObj.get("extra", [])
     textBuffer = pygame.surface.Surface((2000, 2000)).convert_alpha()
     maxw, maxh = 0, 0
     curx, cury = 0, 0
@@ -33,7 +33,7 @@ def displayJSONText(textObj: typing.Dict[str, typing.Any]) -> pygame.Surface:
             elif textObj["color"] in COLOR.keys():                                
                 # if textObj["color"] not in COLOR.keys(): continue
                 textColor = COLOR[textObj["color"]]
-        textT = nameDefaulting("translate", textObj, nameDefaulting("text", textObj, ""))
+        textT = textObj.get("translate", textObj.get("text", ""))
         textS = displayText(textT.replace("\n", ""), textColor)
         textBuffer.blit(textS, (curx, cury))
         cury += textS.get_height() * textT.count("\n")

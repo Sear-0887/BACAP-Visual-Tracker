@@ -3,7 +3,7 @@ import zipfile
 import io
 import re
 import typing
-from utils import exclude, warning, nameDefaulting
+from utils import exclude, warning
 
 from config import *
 
@@ -63,15 +63,15 @@ class Advancement:
             return warning(f"No Display found for {filepath}, skipping")
         
         displayDef = fContent["display"]
-        self.parentID = nameDefaulting("parent", fContent, "")
+        self.parentID = fContent.get("parent", "")
         self.title = self.translateText(displayDef["title"])
         self.titleJSON = displayDef["title"]
         self.description = self.translateText(displayDef["description"])
         self.descriptionJSON = displayDef["description"]
-        self.type = nameDefaulting("frame", displayDef, "task")
+        self.type = displayDef.get("frame", "task")
         self.hidden = "hidden" in displayDef.keys() and displayDef["hidden"]
         criterias: typing.List[str] = fContent['criteria']
-        self.requirements = nameDefaulting('requirements', fContent, list(map(lambda x: [x], criterias))) # type: ignore
+        self.requirements = fContent.get('requirements', list(map(lambda x: [x], criterias))) # type: ignore
         self.playerData = {
             "isDone": False,
             "completed": [],
@@ -80,7 +80,7 @@ class Advancement:
         self.updatePlayerProgress()
     
     def translateText(self, textObj: JSONTextType) -> str:
-        text: str = nameDefaulting("translate", textObj, nameDefaulting("text", textObj, ""))
+        text: str = textObj.get("translate", textObj.get("text", ""))
         if "extra" in textObj.keys():
             for extra in textObj["extra"]:
                 text += self.translateText(extra)
