@@ -22,10 +22,11 @@ RESET = Fore.RESET
 DONE = GREEN + config["symbols"]["done"]
 NOTDONE = RED + config["symbols"]["not_done"]
 
-SAVES = f"{config['playerModProfile']}/saves/{config['targetedSaveFile']}"
+BASE = config['playerModProfile']
+SAVES = f"{BASE}/saves/{config['targetedSaveFile']}"
 DATAPACKZIP = f"{SAVES}/datapacks/bacap.zip"
 
-with open(f"{config['playerModProfile']}/usercache.json", "r", encoding="utf-8") as f:
+with open(f"{BASE}/usercache.json", "r", encoding="utf-8") as f:
     usercache = json.load(f)
 
 playerUUID = ""

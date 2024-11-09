@@ -15,8 +15,6 @@ def RefreshRaw():
 
 # Main adv definition #
 
-zf: zipfile.ZipFile | None = None
-
 class Advancement:
     path: str = "???" # Bad input will cause itself to stay as "???"
     modpackID: str     # Determined by path
@@ -35,15 +33,13 @@ class Advancement:
     # criteria for completing this "requirement".
     # Defaults as a [ <Everything listed in criteria, each criteria is an "requirement"> ]
     requirements: typing.List[typing.List[str]] = [] 
-    # Stores 
     playerData: PlayerDataType = {'isDone': False, 'completed': [], "incompleted": []}
 
-    def __init__(self, filepath: str) -> None:
+    def __init__(self, filepath: str, DataPackZIPFile: zipfile.ZipFile) -> None:
         self.path = filepath.replace("\\", "/")
         
         extracted = re.match(
-            rf"data/(.*)/advancements/(.*)/(.*)\.json", 
-            # rf"{self.baseID}:\1/\2", 
+            rf"data/(.*)/advancements/(.*)/(.*)\.json",
             self.path
         )
 
@@ -51,15 +47,9 @@ class Advancement:
         self.modpackID, self.tab, self.name = extracted.groups()
         self.id = f"{self.modpackID}:{self.tab}/{self.name}"
 
-        if zf is None: return
-        with io.TextIOWrapper(zf.open(self.path), encoding="utf-8") as f:
+        with io.TextIOWrapper(DataPackZIPFile.open(self.path), encoding="utf-8") as f:
             fContent = json.loads(f.read().replace("\\'", "'"))
 
-        self.id = re.sub(
-            rf"data/{self.modpackID}/advancements/(.*)/(.*)\.json", 
-            rf"{self.modpackID}:\1/\2", 
-            self.path
-        )
         self.isDisplayMissing = "display" not in fContent.keys()
         if self.isDisplayMissing: 
             return warning(f"No Display found for {filepath}, skipping")
@@ -88,7 +78,6 @@ class Advancement:
         return text
 
     def updatePlayerProgress(self) -> None:
-        
         rawPlayerData: rawAdvDatatype = {
             "done": False,
             "criteria": {}
@@ -129,17 +118,6 @@ class Advancement:
 {"\n".join(incompleted)}
 {"\n".join(completed)}
           """
-    
-    @staticmethod
-    def openZIP() -> None:
-        global zf
-        zf = zipfile.ZipFile(DATAPACKZIP)
-
-    @staticmethod
-    def closeZIP() -> None:
-        global zf
-        if zf is None: return
-        zf.close()
 # for Internal Testing 
 # {"\n".join(DONE + "/".join(self.playerData["completed"]))}
 #     def __str__(self) -> str:
@@ -160,4 +138,5 @@ print(__name__)
 if __name__ == "__main__":
     # print(str(adv(r"data\blazeandcave\advancements\weaponry\master_shieldsman.json")))
     # print(adv(r"data\blazeandcave\advancements\weaponry\master_shieldsman.json"))
-    print(Advancement(r"data\blazeandcave\advancements\challenges\riddle_me_this.json"))
+    with zipfile.ZipFile(DATAPACKZIP) as f:
+        print(Advancement(r"data\blazeandcave\advancements\challenges\riddle_me_this.json", f))
