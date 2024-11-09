@@ -19,14 +19,6 @@ def loadAllAdv() -> typing.List[Advancement]:
             loadedAdv = Advancement(defPath, zf)
             if not loadedAdv.isDisplayMissing:
                 result.append(loadedAdv)
-            # tabPath = os.path.join(baseDir, tabName)
-            # for defFileName in os.listdir(tabPath):
-            #     if not defFileName.endswith(".json"): 
-            #         warning("Non-AdvDef found in Tab folders")
-            #     defPath = os.path.join(tabPath, defFileName)
-            #     loadedAdv = Advancement(defPath, zf)
-            #     if not loadedAdv.isDisplayMissing:
-            #         result.append(loadedAdv)
 
     zf: zipfile.ZipFile = zipfile.ZipFile(DATAPACKZIP)
     loadAdvInDir(BACAP_DIR)

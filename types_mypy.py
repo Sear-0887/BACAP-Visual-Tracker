@@ -67,8 +67,9 @@ PlayerDataType = typing.TypedDict('PlayerDataType', {
     'incompleted': typing.List[typing.List[str]]
 })
 
-class JSONTextType(typing.TypedDict, total=False):
-    text: str
-    translate: str
-    color: str
-    extra: typing.List[typing.Self]
+JSONTextType = typing.TypedDict("JSONTextType", {
+    "text":      typing.NotRequired[str                    ],
+    "translate": typing.NotRequired[str                    ],
+    "color":     typing.NotRequired[str                    ],
+    "extra":     typing.NotRequired[typing.List[typing.Any]]
+})
