@@ -73,10 +73,10 @@ class GuiElement:
     def getAllGuiElement(): # -> typing.List[GuiElement]
         return allGuiElements
     
-    def getProperties(self) -> typing.Dict[str, typing.Any]:
+    def getProperties(self):
         return vars(self)
     
-    def getProperty(self, key: str) -> typing.Any: # This has the same effect as self.key
+    def getProperty(self, key: str): # This has the same effect as self.key
         return self.getProperties()[key]
     
     @staticmethod
