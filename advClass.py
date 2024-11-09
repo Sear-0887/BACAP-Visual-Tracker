@@ -19,14 +19,16 @@ zf: zipfile.ZipFile | None = None
 
 class Advancement:
     path: str = "???" # Bad input will cause itself to stay as "???"
-    baseID: str     # Determined by path
+    modpackID: str     # Determined by path
     parentID: str 
     tab: str
     name: str
     isDisplayMissing: bool = False # "display" is not present
     id: str = "???" # Determined by self.isDisplayMissing
     title: str = "???" # Determined by self.isDisplayMissing
+    titleJSON: JSONTextType = {"text": "???"}
     description: str = "???" # Determined by self.isDisplayMissing
+    descriptionJSON: JSONTextType = {"text": "???"}
     type: str = "task" # Determined by self.isDisplayMissing
     hidden: bool = False # Determined by self.isDisplayMissing
     # self.requirements is a array containing serval "requirement", which is an array containing the \
@@ -46,16 +48,16 @@ class Advancement:
         )
 
         if extracted is None: return warning(f"Bad Path {self.path}")
-        self.baseID, self.tab, self.name = extracted.groups()
-        self.id = f"{self.baseID}:{self.tab}/{self.name}"
+        self.modpackID, self.tab, self.name = extracted.groups()
+        self.id = f"{self.modpackID}:{self.tab}/{self.name}"
 
         if zf is None: return
         with io.TextIOWrapper(zf.open(self.path), encoding="utf-8") as f:
             fContent = json.loads(f.read().replace("\\'", "'"))
 
         self.id = re.sub(
-            rf"data/{self.baseID}/advancements/(.*)/(.*)\.json", 
-            rf"{self.baseID}:\1/\2", 
+            rf"data/{self.modpackID}/advancements/(.*)/(.*)\.json", 
+            rf"{self.modpackID}:\1/\2", 
             self.path
         )
         self.isDisplayMissing = "display" not in fContent.keys()
@@ -81,15 +83,14 @@ class Advancement:
     
     def translateText(self, textObj: JSONTextType) -> str:
         text: str = textObj.get("translate", textObj.get("text", ""))
-        if "extra" in textObj.keys():
-            for extra in textObj["extra"]:
-                text += self.translateText(extra)
+        for extra in textObj.get("extra", []):
+            text += self.translateText(extra)
         return text
 
-    def updatePlayerProgress(self):
+    def updatePlayerProgress(self) -> None:
         pdtype = typing.TypedDict("pdtype", {
             "done": bool,
-            "criteria": typing.Dict[str, typing.Any] 
+            "criteria": typing.Dict[str, str] 
         })
         playerData: pdtype = {
             "done": False,
@@ -97,7 +98,7 @@ class Advancement:
         }
         
         for key, item in raw.items():
-            if not key.startswith(self.baseID + ":"): continue
+            if not key.startswith(self.modpackID + ":"): continue
             if self.id not in key: continue
             playerData = item
             break
@@ -124,7 +125,7 @@ class Advancement:
         return f""" {color}
 {self.title} - {len(self.playerData["completed"])}/{len(self.requirements)} ({round(percentage, 2)}%)
 | ID - {self.id} | Type - {self.type} | Hidden - {self.hidden} |
-| BaseID - {self.baseID} | Done - {self.playerData['isDone']} | 
+| BaseID - {self.modpackID} | Done - {self.playerData['isDone']} | 
 | PATH - {self.path} |
 {self.description}
 
@@ -133,12 +134,12 @@ class Advancement:
           """
     
     @staticmethod
-    def openZIP():
+    def openZIP() -> None:
         global zf
         zf = zipfile.ZipFile(DATAPACKZIP)
 
     @staticmethod
-    def closeZIP():
+    def closeZIP() -> None:
         global zf
         if zf is None: return
         zf.close()

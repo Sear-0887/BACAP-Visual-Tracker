@@ -35,6 +35,25 @@ ColorKeyType = typing.Literal[
     "white"
 ]
 
+ColorKeys: typing.List[ColorKeyType] = [
+    "black",
+    "dark_blue",
+    "dark_green",
+    "dark_aqua",
+    "dark_red",
+    "dark_purple",
+    "gold",
+    "gray",
+    "dark_gray",
+    "blue",
+    "green",
+    "aqua",
+    "red",
+    "light_purple",
+    "yellow",
+    "white"
+]
+
 ColorsType = typing.Dict[ColorKeyType, RGBTuple]
 
 PlayerDataType = typing.TypedDict('PlayerDataType', {
@@ -43,10 +62,8 @@ PlayerDataType = typing.TypedDict('PlayerDataType', {
     'incompleted': typing.List[typing.List[str]]
 })
 
-JSONTextType = typing.TypedDict("JSONTextType", {
-    "text": str,
-    "translate": str,
-    "color": str,
-    "extra": typing.List[typing.Any]
-})
-
+class JSONTextType(typing.TypedDict, total=False):
+    text: str
+    translate: str
+    color: str
+    extra: typing.List[typing.Self]

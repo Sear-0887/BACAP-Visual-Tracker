@@ -57,7 +57,7 @@ def filtering(x: Advancement, query: str) -> bool:
         (onlyShowSelected in ["incompleted", "all"] and not x.playerData["isDone"])
     )
     PackCheck = bool(
-        packSelected in [x.baseID, "all"]
+        packSelected in [x.modpackID, "all"]
     )
 
     return caseSensitiveCheck and PackCheck and onlyShowCheck

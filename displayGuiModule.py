@@ -15,24 +15,27 @@ RIGHTCLICK = 3
 SCROLLUP = 4
 SCROLLDOWN = 5
 
+cbType = typing.Callable[..., typing.Any]
+
 def emptyFunc(): return
 
 def displayText(text: str, color: RGBTuple, background: RGBTuple | None = None) -> pygame.Surface:
     return font.render(text, True, color, background)
 
-#                            vvvv TBD Fix Typing
-def displayJSONText(textObj: typing.Dict[str, typing.Any]) -> pygame.Surface:
+def displayJSONText(textObj: JSONTextType) -> pygame.Surface:
     allTextObj = [textObj] + textObj.get("extra", [])
     textBuffer = pygame.surface.Surface((2000, 2000)).convert_alpha()
     maxw, maxh = 0, 0
     curx, cury = 0, 0
     for textObj in allTextObj:
-        textColor = COLOR["white"]
-        if "color" in textObj.keys():
-            if textObj["color"].startswith("#"): textColor = convertRGBStrToTuple(textObj["color"])
-            elif textObj["color"] in COLOR.keys():                                
-                # if textObj["color"] not in COLOR.keys(): continue
-                textColor = COLOR[textObj["color"]]
+        textColor: RGBTuple = COLOR["white"]
+        objcolor = textObj.get("color", "white")
+        if objcolor.startswith("#"): 
+            textColor = convertRGBStrToTuple(objcolor)
+        else:
+            if objcolor not in ColorKeys: continue
+            textColor = COLOR.get(objcolor, COLOR["white"])
+        
         textT = textObj.get("translate", textObj.get("text", ""))
         textS = displayText(textT.replace("\n", ""), textColor)
         textBuffer.blit(textS, (curx, cury))
@@ -45,11 +48,11 @@ def displayJSONText(textObj: typing.Dict[str, typing.Any]) -> pygame.Surface:
     return result
 
 class GuiElement:
-    def __init__(self, id_: str, coord: Vector2, text: str="", callback: typing.Callable[..., typing.Any] = emptyFunc):
+    def __init__(self, id_: str, coord: Vector2, text: str="", callback: cbType = emptyFunc):
         self.id: str = id_
         self.coord: Vector2 = coord
         self.text: str = text
-        self.callback: typing.Callable[..., typing.Any] = callback
+        self.callback: cbType = callback
         allGuiElements.append(self)
     
     @staticmethod
@@ -96,7 +99,7 @@ class GuiElement:
 allGuiElements: typing.List[GuiElement] = []
 
 class InputBox(GuiElement):
-    def __init__(self, id_: str, coord: Vector2, dim: Vector2, placeholder: str, callback: typing.Callable[..., typing.Any]):
+    def __init__(self, id_: str, coord: Vector2, dim: Vector2, placeholder: str, callback: cbType):
         super().__init__(id_, coord, "", callback)
         self.active = False
         self.placeholder = placeholder
@@ -131,7 +134,7 @@ class InputBox(GuiElement):
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
 class Button(GuiElement):
-    def __init__(self, id_: str, coord: Vector2, dim: Vector2, text: str, callback: typing.Callable[..., typing.Any]):
+    def __init__(self, id_: str, coord: Vector2, dim: Vector2, text: str, callback: cbType):
         super().__init__(id_, coord, text, callback)
         self.rect: pygame.Rect = pygame.Rect(coord[0], coord[1], dim[0], dim[1])
         self.textSurface: pygame.Surface = displayText(self.text, COLOR["white"])
@@ -168,7 +171,7 @@ class JSONText(GuiElement):
     def __init__(self, id_: str, coord: Vector2, textJSON: JSONTextType):
         super().__init__(id_, coord)
         self.textJSON = textJSON
-        self.textSurface = displayJSONText(dict(self.textJSON))
+        self.textSurface = displayJSONText(self.textJSON)
 
     def draw(self, screen: pygame.Surface):
         screen.blit(self.textSurface, self.coord)
@@ -184,7 +187,7 @@ class RectBox(GuiElement):
         pygame.draw.rect(screen, COLOR["gray"], self.rect, 2)
 
 class CheckBox(GuiElement):
-    def __init__(self, id_: str, coord: Vector2, dim: Vector2, callback: typing.Callable[..., typing.Any]):
+    def __init__(self, id_: str, coord: Vector2, dim: Vector2, callback: cbType):
         super().__init__(id_, coord, "", callback)
         self.checked = False
         self.rect = pygame.Rect(coord[0], coord[1], dim[0], dim[1])
@@ -204,7 +207,7 @@ class SelectionBox(Button):
             self, id_: str, 
             coord: Vector2, dim: Vector2, 
             selection: typing.List[str], 
-            callback: typing.Callable[..., typing.Any] = emptyFunc, 
+            callback: cbType = emptyFunc, 
             initalIndex: int = 0,
             setInstant: bool = True
         ):
