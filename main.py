@@ -34,17 +34,10 @@ def displayAdv(advName: str, allQualified: typing.List[Advancement]):
             cursory += 32
 
 def filtering(x: Advancement, query: str) -> bool:
-    # mypy typing
-    if OptionsConfig["pack"]["type"] != "SelectionBox": return False
-    if OptionsConfig["onlyShow"]["type"] != "SelectionBox": return False
-    if OptionsConfig["caseSensitive"]["type"] != "CheckBox": return False
-    if type(currentOptions["caseSensitive"]) != bool: return False
-    # endof mypy typing
-
     onlyShowSelected = currentOptions["onlyShow"]
     packSelected = currentOptions["pack"]
     isCaseSensitive = currentOptions["caseSensitive"]
-    caseSensitiveCheck = (
+    caseSensitiveCheck = bool(
         (
             not isCaseSensitive and (
                 query.lower() in x.title.lower() or
@@ -59,11 +52,11 @@ def filtering(x: Advancement, query: str) -> bool:
             )
         )
     )
-    onlyShowCheck = (
+    onlyShowCheck = bool(
         (onlyShowSelected in ["completed", "all"] and x.playerData["isDone"]) or
         (onlyShowSelected in ["incompleted", "all"] and not x.playerData["isDone"])
     )
-    PackCheck = (
+    PackCheck = bool(
         packSelected in [x.baseID, "all"]
     )
 
