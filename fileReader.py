@@ -6,7 +6,7 @@ from colorama import init as Colorama_Init
 
 from config import *
 from utils import warning
-from adv_class import Advancement
+from advClass import Advancement
 
 Colorama_Init()
 

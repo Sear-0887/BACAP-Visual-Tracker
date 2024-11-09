@@ -1,5 +1,5 @@
 import typing
-from adv_class import Advancement
+from advClass import Advancement
 from assets.consoleBased import loadAllAdv
 from config import *
 

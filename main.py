@@ -4,7 +4,7 @@ import typing
 from config import *
 
 from fileReader import getadvCache, loadAllAdv
-from adv_class import Advancement, RefreshRaw
+from advClass import Advancement, RefreshRaw
 from displayGuiModule import CheckBox, GuiElement, Button, InputBox, JSONText, RectBox, SelectionBox, Text
 from types_mypy import *
 

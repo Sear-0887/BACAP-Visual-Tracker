@@ -1,16 +1,14 @@
-import typing
+# If you wish to use this version, please drag this file to the same level as main.py. #
+
 from colorama import init as Colorama_Init
 
 from config import *
-from fileReader import getadvCache, loadAllAdv
-from adv_class import Advancement
+from fileReader import getadvCache
 
 Colorama_Init()
 
-isAdvCached = False
-
 def consoleSearch(query: str):
-    qualified = getadvCache()
+    qualified = list(filter(lambda x: x.title == query, getadvCache()))
     # print(qualified)
     print(len(qualified))
     index = 1
@@ -20,6 +18,5 @@ def consoleSearch(query: str):
     print(qualified[int(input("Enter Index: "))-1])
 
 if __name__ == "__main__":
-    advCache: typing.List[Advancement] = loadAllAdv()
     while True:
         consoleSearch(input("Enter Search: "))
