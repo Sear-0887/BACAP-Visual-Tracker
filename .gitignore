@@ -1,6 +1,5 @@
 # Settings
 config.json
-data/
 
 # Cache
 .vscode/
@@ -8,9 +7,4 @@ __pycache__/
 .mypy_cache/
 
 # Unrefed Code
-statmerger/
-src/
-play.json
-old_code_ref/
-
 deprecated_/
