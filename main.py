@@ -3,7 +3,7 @@ import typing
 
 from config import *
 
-from fileReader import getadvCache, loadAllAdv
+from fileReader import getadvCache
 from advClass import Advancement, RefreshRaw
 from displayGuiModule import CheckBox, GuiElement, Button, InputBox, JSONText, RectBox, SelectionBox, Text
 from types_mypy import *
@@ -113,7 +113,8 @@ def searchAdv(query: str):
 
 def Refresh(_: Button):
     RefreshRaw()
-    loadAllAdv()
+    for adv in getadvCache():
+        adv.updatePlayerProgress()
 
 InputBox("advsearchbox", (0, 0), (140, 32), "Search...", lambda self: searchAdv(self["text"])) # type: ignore
 Button(
