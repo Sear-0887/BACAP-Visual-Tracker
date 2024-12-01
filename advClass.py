@@ -8,8 +8,9 @@ from config import *
 
 raw: typing.Dict[str, rawAdvDatatype] = {}
 def RefreshRaw():
+    global raw
+    raw = {}
     with open(PDFILE, encoding="utf-8") as f:
-        global raw
         raw = json.load(f)
 
 # Main adv definition #
@@ -32,7 +33,12 @@ class Advancement:
     # criteria for completing this "requirement".
     # Defaults as a [ <Everything listed in criteria, each criteria is an "requirement"> ]
     requirements: typing.List[typing.List[str]] = [] 
-    playerData: PlayerDataType = {'isDone': False, 'completed': [], "incompleted": []}
+    playerData: PlayerDataType = {
+        'isDone': False, 
+        'completed': [], 
+        "incompleted": [],
+        "criteriaTimeStamp": {}
+    }
 
     def __init__(self, filepath: zipfile.Path) -> None:
         self.path = str(filepath)
@@ -64,7 +70,8 @@ class Advancement:
         self.playerData = {
             "isDone": False,
             "completed": [],
-            "incompleted": []
+            "incompleted": [],
+            "criteriaTimeStamp": {}
         }
         self.updatePlayerProgress()
     
@@ -89,6 +96,9 @@ class Advancement:
             warning(f"ID {self.id} is not present in playerData. Used empty data.")
 
         self.playerData["isDone"] = rawPlayerData["done"]
+        self.playerData["completed"] = []
+        self.playerData["incompleted"] = []
+        self.playerData["criteriaTimeStamp"] = rawPlayerData["criteria"]
         progressNames = rawPlayerData["criteria"].keys()
         
         for requirement in self.requirements:

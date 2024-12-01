@@ -64,7 +64,8 @@ rawAdvDatatype = typing.TypedDict("rawAdvDatatype", {
 PlayerDataType = typing.TypedDict('PlayerDataType', {
     'isDone': bool, 
     'completed': typing.List[typing.List[str]], 
-    'incompleted': typing.List[typing.List[str]]
+    'incompleted': typing.List[typing.List[str]],
+    "criteriaTimeStamp": typing.Dict[str, str]
 })
 
 JSONTextType = typing.TypedDict("JSONTextType", {
