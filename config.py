@@ -43,7 +43,7 @@ MC_ID = "minecraft"
 
 FONTNAME = config["fontPath"]
 
-COLOR: ColorsType = {
+Color: ColorsType = {
     "black": (0, 0, 0),
     "dark_blue": (0, 0, 170),
     "dark_green": (0, 170, 0),

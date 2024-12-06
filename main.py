@@ -4,15 +4,15 @@ import typing
 from config import *
 
 from fileReader import getadvCache
-from advClass import Advancement, RefreshRaw
-from displayGuiModule import CheckBox, GuiElement, Button, InputBox, JSONText, RectBox, SelectionBox, Text
+from advClass import Advancement, refreshRaw
+from displayGuiModule import *
 from types_mypy import *
 
 pygame.init()
 pygame.key.set_repeat(500, 50)
 
 root = pygame.display.set_mode((WIDTH, HEIGHT))
-Running: bool = True
+windowRunning: bool = True
 
 currentOptions = dict(map(lambda x: (x[0], x[1]["default"]), OptionsConfig.items()))
 
@@ -27,17 +27,17 @@ def displayAdv(advName: str, allQualified: typing.List[Advancement]):
         cursory += descBox.textSurface.get_height()
 
         for l, criterion in enumerate(Adv.playerData["incompleted"]):
-            Text(f"adv_display_incomp_line_{l}", (300, cursory), "/".join(criterion), COLOR["red"])
+            Text(f"adv_display_incomp_line_{l}", (300, cursory), "/".join(criterion), Color["red"])
             cursory += 32
         for l, criterion in enumerate(Adv.playerData["completed"]):
-            Text(f"adv_display_comp_line_{l}", (300, cursory), "/".join(criterion), COLOR["green"])
+            Text(f"adv_display_comp_line_{l}", (300, cursory), "/".join(criterion), Color["green"])
             cursory += 32
 
 def filtering(x: Advancement, query: str) -> bool:
     onlyShowSelected = currentOptions["onlyShow"]
     packSelected = currentOptions["pack"]
-    isCaseSensitive = currentOptions["caseSensitive"]
-    caseSensitiveCheck = bool(
+    isCaseSensitive = bool(currentOptions["caseSensitive"])
+    caseSensitiveCheck = (
         (
             not isCaseSensitive and (
                 query.lower() in x.title.lower() or
@@ -56,11 +56,11 @@ def filtering(x: Advancement, query: str) -> bool:
         (onlyShowSelected in ["completed", "all"] and x.playerData["isDone"]) or
         (onlyShowSelected in ["incompleted", "all"] and not x.playerData["isDone"])
     )
-    PackCheck = bool(
+    packCheck = bool(
         packSelected in [x.modpackID, "all"]
     )
 
-    return caseSensitiveCheck and PackCheck and onlyShowCheck
+    return caseSensitiveCheck and packCheck and onlyShowCheck
 
 def setFilterOptions(x: SelectionBox | CheckBox):
     id_ = x.id.split("_")[1]
@@ -71,17 +71,22 @@ def setFilterOptions(x: SelectionBox | CheckBox):
         # print(f"toggling {id_} to {x.checked}")
         currentOptions[id_] = x.checked
 
-def ToggleFilterPopup(_: Button):
-    if GuiElement.getElementExist("advfilter_baseplate"):
-        GuiElement.deleteGuiElementById("advfilter_.*")
+def toggleFilterPopup(_: Button):
+    if GuiElement.getElementExist("advFilterBaseplate"):
+        GuiElement.deleteGuiElementById("advFilter.*")
         return
     cursorx, cursory = 300, 32
-    RectBox("advfilter_baseplate", (cursorx, cursory), (210, 32*len(OptionsConfig.items())), COLOR["black"])
+    RectBox(
+        "advFilterBaseplate", 
+        (cursorx, cursory), 
+        (210, 32*len(OptionsConfig.items())), 
+        Color["black"]
+    )
     for optionName, option in OptionsConfig.items():
-        label = Text(f"advfilter_{optionName}_label", (cursorx, cursory), optionName)
+        label = Text(f"advFilter_{optionName}_label", (cursorx, cursory), optionName)
         if option["type"] == "SelectionBox":
             SelectionBox(
-                f"advfilter_{optionName}_sel", 
+                f"advFilter_{optionName}_sel", 
                 (cursorx + label.textSurface.get_width() + 40, cursory), 
                 (0, 32), 
                 option["selections"], 
@@ -90,7 +95,7 @@ def ToggleFilterPopup(_: Button):
             )
         elif option["type"] == "CheckBox":
             CheckBox(
-                f"advfilter_{optionName}_sel", 
+                f"advFilter_{optionName}_sel", 
                 (cursorx + label.textSurface.get_width() + 40, cursory), 
                 (32, 32), 
                 setFilterOptions,
@@ -112,21 +117,21 @@ def searchAdv(query: str):
         )
 
 def Refresh(_: Button):
-    RefreshRaw()
+    refreshRaw()
     for adv in getadvCache():
         adv.updatePlayerProgress()
 
-InputBox("advsearchbox", (0, 0), (140, 32), "Search...", lambda self: searchAdv(self["text"])) # type: ignore
+InputBox("advSearchBox", (0, 0), (140, 32), "Search...", lambda self: searchAdv(self["text"])) # type: ignore
 Button(
     "advsearchbtn", (230, 0), (70, 32), "Search", 
-    lambda _: searchAdv(GuiElement.getElementById("advsearchbox")["text"]) # type: ignore
+    lambda _: searchAdv(GuiElement.getElementById("advSearchBox")["text"]) # type: ignore
     )
 Button(
-    "advsearchfilterbtn", (300, 0), (0, 32), "Filter", 
-    ToggleFilterPopup
+    "advSearchFilterBtn", (300, 0), (0, 32), "Filter", 
+    toggleFilterPopup
     )
 Button(
-    "advrefreshbtn", (400, 0), (0, 32), "Refresh",
+    "advSearchRefreshBtn", (400, 0), (0, 32), "Refresh",
     Refresh
 )
 
@@ -137,12 +142,12 @@ def processesAllInput(allEvents: typing.List[pygame.event.Event]):
         element.update()
         element.draw(root)
 
-RefreshRaw()
-while Running:
-    root.fill(COLOR["black"])
+refreshRaw()
+while windowRunning:
+    root.fill(Color["black"])
     allEvents = pygame.event.get()
     processesAllInput(allEvents)
     for event in allEvents:
         if event.type == pygame.QUIT:
-            Running = False
+            windowRunning = False
     pygame.display.flip()

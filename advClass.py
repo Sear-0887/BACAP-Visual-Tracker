@@ -7,7 +7,7 @@ from utils import exclude, warning
 from config import *
 
 raw: typing.Dict[str, rawAdvDatatype] = {}
-def RefreshRaw():
+def refreshRaw():
     global raw
     raw = {}
     with open(PDFILE, encoding="utf-8") as f:
